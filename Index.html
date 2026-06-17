@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mya's Meal Planner 🐾</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:#0f1720;color:#e8dcc8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;}
+.header{background:#0a1018;padding:16px 20px 0;border-bottom:1px solid rgba(200,147,58,0.2);position:sticky;top:0;z-index:100;}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.app-title{font-size:20px;font-weight:700;color:#c8933a;}
+.tabs{display:flex;}
+.tab{flex:1;padding:10px 4px;font-size:12px;font-weight:600;color:#666;background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;}
+.tab.active{color:#c8933a;border-bottom-color:#c8933a;}
+.page{padding:16px;padding-bottom:80px;display:none;}
+.page.active{display:block;}
+.date-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;background:#1a2535;border-radius:12px;padding:12px 16px;}
+.nav-btn{background:rgba(200,147,58,0.15);border:1px solid rgba(200,147,58,0.3);color:#c8933a;border-radius:8px;padding:8px 18px;font-size:20px;cursor:pointer;}
+.date-center{text-align:center;}
+.date-main{font-size:15px;font-weight:700;}
+.date-sub{font-size:11px;color:#888;margin-top:3px;}
+.meal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.meal-card{background:#1a2535;border:1px solid rgba(200,147,58,0.2);border-radius:12px;padding:12px;}
+.meal-card.fed{background:#1a2f1a;border-color:rgba(76,175,80,0.4);}
+.slot-label{font-size:10px;font-weight:700;color:#666;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.meal-protein{font-size:13px;font-weight:700;margin-bottom:4px;line-height:1.3;}
+.meal-details{font-size:11px;color:#888;line-height:1.6;}
+.addin-tags{margin-top:6px;padding:5px 7px;background:rgba(200,147,58,0.08);border-radius:6px;}
+.addin-tag{font-size:10px;color:#c8933a;}
+.addins-btn{width:100%;margin-top:8px;padding:7px 0;background:transparent;border:1px solid rgba(200,147,58,0.4);color:#c8933a;border-radius:8px;font-size:11px;cursor:pointer;}
+.fed-btn{width:100%;margin-top:8px;padding:9px 0;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:#c8933a;color:#0f1720;}
+.fed-btn.active{background:#4caf50;color:#fff;}
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:200;display:flex;align-items:flex-end;}
+.modal{background:#1a2535;border-radius:16px 16px 0 0;width:100%;padding:20px;max-height:75vh;overflow-y:auto;}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.modal-title{font-size:15px;font-weight:700;color:#c8933a;}
+.modal-close{background:transparent;border:none;color:#888;font-size:22px;cursor:pointer;line-height:1;}
+.modal-hint{font-size:11px;color:#666;margin-bottom:14px;}
+.ai-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.ai-name{font-size:14px;flex:1;}
+.ai-right{display:flex;align-items:center;gap:8px;}
+.ai-input{width:58px;padding:6px 8px;background:#0f1720;border:1px solid rgba(200,147,58,0.3);border-radius:8px;color:#e8dcc8;font-size:14px;text-align:center;-webkit-appearance:none;}
+.ai-unit{font-size:11px;color:#666;}
+.save-btn{width:100%;padding:14px;background:#c8933a;border:none;border-radius:10px;color:#0f1720;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;}
+.summary-box{background:#1a2535;border-radius:12px;padding:14px;margin-bottom:12px;}
+.summary-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+.summary-sub{font-size:11px;color:#888;margin-bottom:10px;}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;}
+.s-pill{padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;}
+.n-card{background:#1a2535;border-radius:10px;padding:12px;margin-bottom:8px;}
+.n-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.n-name{font-size:12px;font-weight:700;}
+.n-val{font-size:11px;}
+.n-pill{display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700;margin-left:5px;}
+.bar-bg{height:5px;background:#0a1018;border-radius:3px;margin-bottom:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;}
+.n-range{font-size:10px;color:#555;}
+.recipe-card{background:#1a2535;border-radius:12px;padding:16px;margin-bottom:12px;}
+.r-title{font-size:15px;font-weight:700;color:#c8933a;margin-bottom:10px;}
+.r-section{font-size:10px;font-weight:700;color:#555;letter-spacing:1px;text-transform:uppercase;margin-top:10px;margin-bottom:5px;}
+.r-item{font-size:12px;color:#b0a090;line-height:1.9;}
+.r-item.opt{color:#666;}
+.empty-state{text-align:center;padding-top:60px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="app-title">Mya's Meal Planner</div>
+    <span style="font-size:22px">🐾</span>
+  </div>
+  <div class="tabs">
+    <button class="tab active" id="tab-calendar" onclick="showTab('calendar')">📅 Calendar</button>
+    <button class="tab" id="tab-nutrition" onclick="showTab('nutrition')">📊 Nutrition</button>
+    <button class="tab" id="tab-recipes" onclick="showTab('recipes')">👨‍🍳 Recipes</button>
+  </div>
+</div>
+
+<div class="page active" id="page-calendar"></div>
+<div class="page" id="page-nutrition"></div>
+<div class="page" id="page-recipes"></div>
+<div id="modal-root"></div>
+
+<script>
+// ── NUTRITION DATA ────────────────────────────────────────────────────────────
+var AAFCO = [
+  {k:"protein",   label:"Protein",        unit:"g",   min:45.0,  max:999  },
+  {k:"fat",       label:"Fat",            unit:"g",   min:13.8,  max:55   },
+  {k:"calcium",   label:"Calcium",        unit:"mg",  min:1250,  max:2500 },
+  {k:"phosphorus",label:"Phosphorus",     unit:"mg",  min:1000,  max:4000 },
+  {k:"potassium", label:"Potassium",      unit:"mg",  min:1378,  max:9999 },
+  {k:"sodium",    label:"Sodium",         unit:"mg",  min:200,   max:1500 },
+  {k:"chloride",  label:"Chloride",       unit:"mg",  min:300,   max:9999 },
+  {k:"magnesium", label:"Magnesium",      unit:"mg",  min:150,   max:9999 },
+  {k:"iron",      label:"Iron",           unit:"mg",  min:10,    max:250  },
+  {k:"copper",    label:"Copper",         unit:"mg",  min:1.83,  max:25   },
+  {k:"zinc",      label:"Zinc",           unit:"mg",  min:15.0,  max:100  },
+  {k:"iodine",    label:"Iodine",         unit:"mg",  min:0.22,  max:2.75 },
+  {k:"selenium",  label:"Selenium",       unit:"mcg", min:87.5,  max:500  },
+  {k:"omega3",    label:"Omega-3",        unit:"mg",  min:110,   max:9999 },
+  {k:"omega6",    label:"Omega-6",        unit:"mg",  min:2800,  max:9999 },
+  {k:"vitA",      label:"Vitamin A",      unit:"IU",  min:1278,  max:50000},
+  {k:"vitD",      label:"Vitamin D",      unit:"IU",  min:136,   max:1800 },
+  {k:"vitE",      label:"Vitamin E",      unit:"IU",  min:11,    max:9999 },
+  {k:"vitK",      label:"Vitamin K",      unit:"mcg", min:82,    max:9999 },
+  {k:"vitB1",     label:"Thiamine B1",    unit:"mg",  min:0.56,  max:9999 },
+  {k:"vitB2",     label:"Riboflavin B2",  unit:"mg",  min:1.3,   max:9999 },
+  {k:"vitB3",     label:"Niacin B3",      unit:"mg",  min:4.25,  max:9999 },
+  {k:"vitB5",     label:"Pantothenic B5", unit:"mg",  min:4.0,   max:9999 },
+  {k:"vitB6",     label:"Pyridoxine B6",  unit:"mg",  min:0.375, max:9999 },
+  {k:"vitB12",    label:"Cobalamin B12",  unit:"mcg", min:9.0,   max:9999 },
+  {k:"folate",    label:"Folate",         unit:"mcg", min:68,    max:9999 },
+  {k:"choline",   label:"Choline",        unit:"mg",  min:425,   max:9999 }
+];
+var KEYS = AAFCO.map(function(a){return a.k;});
+
+function makeNutr(pr,fa,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch){
+  return {protein:pr,fat:fa,calcium:ca,phosphorus:ph,potassium:po,sodium:so,chloride:cl,magnesium:mg,iron:fe,copper:cu,zinc:zn,iodine:io,selenium:se,omega3:o3,omega6:o6,vitA:vA,vitD:vD,vitE:vE,vitK:vK,vitB1:b1,vitB2:b2,vitB3:b3,vitB5:b5,vitB6:b6,vitB12:b12,folate:fo,choline:ch};
+}
+
+var FOODS = {
+  "Beef (80/20)":       makeNutr(5.7,5.1,5,51,78,20,30,5,0.7,0.04,1.5,0.001,5,60,220,0,0.7,0.1,0,0.02,0.06,1.2,0.2,0.1,0.8,2,20),
+  "Ground Turkey":      makeNutr(5.6,3.8,9,52,82,25,38,6,0.5,0.03,1.0,0.001,6,55,280,0,0.5,0.1,0,0.02,0.07,1.5,0.3,0.14,0.5,3,22),
+  "Ground Lamb":        makeNutr(5.4,5.8,6,48,72,22,33,5,0.6,0.04,1.3,0.001,4,80,200,0,0.5,0.1,0,0.03,0.07,1.3,0.25,0.11,0.8,3,19),
+  "Ground Pork":        makeNutr(5.3,5.6,5,54,76,22,33,5,0.4,0.03,1.1,0.001,7,50,350,0,0.9,0.1,0,0.17,0.09,1.1,0.3,0.13,0.3,1,20),
+  "Ground Chicken":     makeNutr(5.5,4.2,6,53,76,23,35,6,0.4,0.03,0.8,0.001,7,45,310,0,0.5,0.1,0,0.02,0.06,1.8,0.35,0.16,0.1,2,21),
+  "Sardines (canned)":  makeNutr(5.8,3.2,115,90,95,110,160,9,0.6,0.04,0.8,0.01,12,550,130,27,50,0.3,0.5,0.01,0.07,1.2,0.2,0.04,3.2,3,20),
+  "Salmon (canned)":    makeNutr(5.6,3.0,60,82,90,80,120,8,0.4,0.03,0.7,0.008,10,650,120,20,120,0.5,0.1,0.05,0.08,2.0,0.4,0.15,2.5,5,22),
+  "Beef Liver":         makeNutr(5.6,1.0,2,100,80,22,33,5,1.5,1.9,1.5,0.002,10,30,110,5000,12,0.3,1.5,0.1,0.8,3.5,1.7,0.25,25,80,120),
+  "Chicken Liver":      makeNutr(5.3,1.2,3,95,73,26,39,5,2.5,0.9,1.2,0.002,15,40,150,3800,15,0.5,2.0,0.08,0.7,3.0,2.0,0.22,22,130,110),
+  "Beef Heart":         makeNutr(5.5,2.0,3,70,80,22,33,5,1.0,0.2,1.2,0.001,5,35,90,5,0.5,0.2,0.2,0.08,0.3,2.5,0.6,0.1,4.5,3,35),
+  "Quinoa (cooked)":    makeNutr(1.1,0.5,10,28,50,3,5,12,0.4,0.06,0.4,0,1.5,10,50,0,0,0.1,0,0.04,0.02,0.2,0.1,0.05,0,20,5),
+  "Sweet Potato (cooked)":makeNutr(0.5,0.0,8,13,90,3,5,5,0.2,0.02,0.1,0,0.2,5,15,380,0,0.1,0.5,0.03,0.02,0.2,0.2,0.08,0,3,6),
+  "Brown Rice (cooked)":makeNutr(0.7,0.2,2,18,22,1,2,9,0.1,0.02,0.2,0,0.5,5,30,0,0,0.0,0,0.04,0.01,0.6,0.2,0.06,0,2,4),
+  "Green Beans":        makeNutr(0.5,0.1,12,10,60,2,3,6,0.2,0.02,0.1,0,0.1,15,8,30,0,0.1,5,0.02,0.02,0.1,0.05,0.02,0,8,5),
+  "Zucchini":           makeNutr(0.5,0.1,6,16,90,2,3,7,0.1,0.02,0.1,0,0.1,20,15,10,0,0.1,2,0.02,0.02,0.2,0.1,0.04,0,15,8),
+  "Peas":               makeNutr(1.4,0.1,8,23,90,2,3,8,0.4,0.04,0.3,0,0.2,20,20,15,0,0.1,5,0.06,0.03,0.5,0.1,0.04,0,25,10),
+  "Spinach":            makeNutr(0.8,0.1,28,13,130,22,33,21,0.8,0.03,0.2,0,0.3,40,8,210,0,0.6,135,0.03,0.06,0.3,0.1,0.06,0,60,7),
+  "Carrots":            makeNutr(0.3,0.0,9,10,80,16,24,4,0.1,0.01,0.1,0,0.1,5,10,440,0,0.2,2,0.02,0.02,0.2,0.1,0.04,0,5,5)
+};
+
+var ADDINS = {
+  "Blueberries":      makeNutr(0.2,0.1,2,4,25,0,1,2,0.1,0.01,0.0,0,0.0,3,8,8,0,0.6,5,0.01,0.01,0.1,0.06,0.02,0,2,2),
+  "Pumpkin (canned)": makeNutr(0.3,0.1,7,9,50,1,2,3,0.2,0.01,0.1,0,0.1,5,5,450,0,0.6,2,0.01,0.02,0.1,0.1,0.02,0,4,5),
+  "Carrots":          makeNutr(0.3,0.0,9,10,80,16,24,4,0.1,0.01,0.1,0,0.1,5,10,440,0,0.2,2,0.02,0.02,0.2,0.1,0.04,0,5,5),
+  "Sweet Potato":     makeNutr(0.5,0.0,8,13,90,3,5,5,0.2,0.02,0.1,0,0.2,5,15,380,0,0.1,0.5,0.03,0.02,0.2,0.2,0.08,0,3,6),
+  "Bone Broth":       makeNutr(0.8,0.2,8,12,18,90,135,2,0.0,0.01,0.1,0,0.1,5,10,0,0,0.0,0,0.00,0.01,0.1,0.05,0.01,0,0,3),
+  "Fish Oil":         makeNutr(0.0,3.2,0,0,0,0,0,0,0.0,0.00,0.0,0,0.0,820,80,0,35,1.5,0,0.00,0.00,0.0,0.0,0.00,0,0,0),
+  "Cod Liver Oil":    makeNutr(0.0,2.8,0,0,0,0,0,0,0.0,0.00,0.0,0,0.0,700,50,3200,340,1.0,0,0.00,0.00,0.0,0.0,0.00,0,0,0),
+  "Sunflower Oil":    makeNutr(0.0,3.4,0,0,0,0,0,0,0.0,0.00,0.0,0,0.0,5,1800,0,0,5.5,0,0.00,0.00,0.0,0.0,0.00,0,0,0)
+};
+
+var SUPPS = makeNutr(0,0,800,0,0,115,175,0,0,0,0,0.10,0,0,0,0,0,3.4,0,0,0,0,0,0,0,0,0);
+
+var ADDIN_NAMES = Object.keys(ADDINS);
+
+// ── MEAL ROTATION ─────────────────────────────────────────────────────────────
+var DAYS_OF_WEEK = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+function meal(pr,st,vg,or){return {protein:pr,starch:st,veg:vg,organ:or||null};}
+
+var WEEKS = {
+  1:{
+    Sun:{am:meal("Sardines (canned)","Brown Rice (cooked)","Green Beans"),  pm:meal("Beef (80/20)","Quinoa (cooked)","Carrots","Beef Heart")},
+    Mon:{am:meal("Beef (80/20)","Quinoa (cooked)","Green Beans","Beef Heart"),pm:meal("Ground Turkey","Brown Rice (cooked)","Zucchini","Chicken Liver")},
+    Tue:{am:meal("Beef (80/20)","Quinoa (cooked)","Green Beans","Beef Heart"),pm:meal("Ground Turkey","Brown Rice (cooked)","Zucchini","Chicken Liver")},
+    Wed:{am:meal("Beef (80/20)","Sweet Potato (cooked)","Peas","Beef Liver"),pm:meal("Ground Turkey","Quinoa (cooked)","Spinach","Beef Heart")},
+    Thu:{am:meal("Sardines (canned)","Quinoa (cooked)","Green Beans"),       pm:meal("Ground Turkey","Brown Rice (cooked)","Carrots","Chicken Liver")},
+    Fri:{am:meal("Beef (80/20)","Brown Rice (cooked)","Zucchini","Beef Heart"),pm:meal("Ground Turkey","Quinoa (cooked)","Green Beans","Beef Liver")},
+    Sat:{am:meal("Beef (80/20)","Quinoa (cooked)","Peas","Beef Liver"),      pm:meal("Ground Turkey","Sweet Potato (cooked)","Zucchini","Beef Heart")}
+  },
+  2:{
+    Sun:{am:meal("Salmon (canned)","Sweet Potato (cooked)","Peas"),          pm:meal("Ground Lamb","Brown Rice (cooked)","Green Beans","Beef Liver")},
+    Mon:{am:meal("Ground Lamb","Quinoa (cooked)","Zucchini","Beef Heart"),   pm:meal("Ground Pork","Sweet Potato (cooked)","Peas","Beef Liver")},
+    Tue:{am:meal("Ground Lamb","Quinoa (cooked)","Zucchini","Beef Heart"),   pm:meal("Ground Pork","Sweet Potato (cooked)","Peas","Beef Liver")},
+    Wed:{am:meal("Ground Lamb","Brown Rice (cooked)","Green Beans","Chicken Liver"),pm:meal("Ground Pork","Quinoa (cooked)","Spinach","Beef Heart")},
+    Thu:{am:meal("Salmon (canned)","Quinoa (cooked)","Zucchini"),            pm:meal("Ground Pork","Brown Rice (cooked)","Green Beans","Beef Liver")},
+    Fri:{am:meal("Ground Lamb","Sweet Potato (cooked)","Peas","Beef Heart"), pm:meal("Ground Pork","Quinoa (cooked)","Carrots","Chicken Liver")},
+    Sat:{am:meal("Ground Lamb","Brown Rice (cooked)","Carrots","Beef Liver"),pm:meal("Ground Pork","Quinoa (cooked)","Zucchini","Beef Heart")}
+  },
+  3:{
+    Sun:{am:meal("Sardines (canned)","Sweet Potato (cooked)","Peas"),        pm:meal("Ground Turkey","Brown Rice (cooked)","Green Beans","Beef Heart")},
+    Mon:{am:meal("Ground Turkey","Quinoa (cooked)","Spinach","Chicken Liver"),pm:meal("Ground Chicken","Sweet Potato (cooked)","Green Beans","Beef Heart")},
+    Tue:{am:meal("Ground Turkey","Quinoa (cooked)","Spinach","Chicken Liver"),pm:meal("Ground Chicken","Sweet Potato (cooked)","Green Beans","Beef Heart")},
+    Wed:{am:meal("Ground Turkey","Brown Rice (cooked)","Zucchini","Beef Heart"),pm:meal("Ground Chicken","Quinoa (cooked)","Carrots","Beef Liver")},
+    Thu:{am:meal("Sardines (canned)","Quinoa (cooked)","Green Beans"),       pm:meal("Ground Chicken","Brown Rice (cooked)","Peas","Chicken Liver")},
+    Fri:{am:meal("Ground Turkey","Sweet Potato (cooked)","Peas","Chicken Liver"),pm:meal("Ground Chicken","Quinoa (cooked)","Spinach","Beef Heart")},
+    Sat:{am:meal("Ground Turkey","Brown Rice (cooked)","Carrots","Beef Liver"),pm:meal("Ground Chicken","Quinoa (cooked)","Zucchini","Chicken Liver")}
+  },
+  4:{
+    Sun:{am:meal("Salmon (canned)","Quinoa (cooked)","Peas"),                pm:meal("Ground Pork","Brown Rice (cooked)","Zucchini","Beef Heart")},
+    Mon:{am:meal("Ground Pork","Quinoa (cooked)","Peas","Beef Heart"),       pm:meal("Beef (80/20)","Brown Rice (cooked)","Spinach","Beef Liver")},
+    Tue:{am:meal("Ground Pork","Quinoa (cooked)","Peas","Beef Heart"),       pm:meal("Beef (80/20)","Brown Rice (cooked)","Spinach","Beef Liver")},
+    Wed:{am:meal("Ground Pork","Sweet Potato (cooked)","Zucchini","Beef Liver"),pm:meal("Beef (80/20)","Quinoa (cooked)","Green Beans","Beef Heart")},
+    Thu:{am:meal("Salmon (canned)","Brown Rice (cooked)","Carrots"),         pm:meal("Beef (80/20)","Quinoa (cooked)","Zucchini","Chicken Liver")},
+    Fri:{am:meal("Ground Pork","Quinoa (cooked)","Carrots","Chicken Liver"), pm:meal("Beef (80/20)","Sweet Potato (cooked)","Peas","Beef Heart")},
+    Sat:{am:meal("Ground Pork","Brown Rice (cooked)","Spinach","Beef Heart"),pm:meal("Beef (80/20)","Quinoa (cooked)","Green Beans","Beef Liver")}
+  }
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var fedLog = {};
+var addinsLog = {};
+try { fedLog = JSON.parse(localStorage.getItem("mya_fed") || "{}"); } catch(e) {}
+try { addinsLog = JSON.parse(localStorage.getItem("mya_addins") || "{}"); } catch(e) {}
+
+// current date as y/m/d integers — avoids all timezone/ISO string issues
+var today = new Date();
+var curYear = today.getFullYear();
+var curMonth = today.getMonth();
+var curDay = today.getDate();
+
+function dateKey(y,m,d) {
+  return y + "-" + (m<10?"0"+m:m) + "-" + (d<10?"0"+d:d);
+}
+
+function getDayOfWeek(y,m,d) {
+  return new Date(y, m, d).getDay(); // 0=Sun
+}
+
+function getWeekNum(y,m,d) {
+  var jan1 = new Date(y, 0, 1);
+  var doy = Math.round((new Date(y,m,d) - jan1) / 86400000);
+  return (Math.floor(doy / 7) % 4) + 1;
+}
+
+function formatDateLabel(y,m,d) {
+  var names = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var dow = getDayOfWeek(y,m,d);
+  return names[dow] + ", " + months[m] + " " + d;
+}
+
+function advanceDay(n) {
+  var dt = new Date(curYear, curMonth, curDay + n);
+  curYear = dt.getFullYear();
+  curMonth = dt.getMonth();
+  curDay = dt.getDate();
+}
+
+// ── NUTRITION CALC ────────────────────────────────────────────────────────────
+function zeroNutr() {
+  var t = {};
+  for (var i=0; i<KEYS.length; i++) t[KEYS[i]] = 0;
+  return t;
+}
+
+function addFood(totals, src, oz) {
+  if (!src) return;
+  for (var i=0; i<KEYS.length; i++) totals[KEYS[i]] += (src[KEYS[i]] || 0) * oz;
+}
+
+function calcMeal(mealObj, addins) {
+  var t = zeroNutr();
+  if (mealObj) {
+    addFood(t, FOODS[mealObj.protein], 8);
+    addFood(t, FOODS[mealObj.starch], 2.5);
+    addFood(t, FOODS[mealObj.veg], 2.5);
+    if (mealObj.organ) addFood(t, FOODS[mealObj.organ], 0.5);
+    for (var i=0; i<KEYS.length; i++) t[KEYS[i]] += SUPPS[KEYS[i]] || 0;
+  }
+  if (addins) {
+    var names = Object.keys(addins);
+    for (var j=0; j<names.length; j++) {
+      var oz = addins[names[j]];
+      if (oz > 0) addFood(t, ADDINS[names[j]], oz);
+    }
+  }
+  return t;
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+function showTab(name) {
+  var tabs = ["calendar","nutrition","recipes"];
+  for (var i=0; i<tabs.length; i++) {
+    var pg = document.getElementById("page-"+tabs[i]);
+    var tb = document.getElementById("tab-"+tabs[i]);
+    if (tabs[i] === name) {
+      pg.className = "page active";
+      tb.className = "tab active";
+    } else {
+      pg.className = "page";
+      tb.className = "tab";
+    }
+  }
+  if (name === "calendar")  renderCalendar();
+  if (name === "nutrition") renderNutrition();
+  if (name === "recipes")   renderRecipes();
+}
+
+// ── CALENDAR ──────────────────────────────────────────────────────────────────
+function renderCalendar() {
+  var ds = dateKey(curYear, curMonth, curDay);
+  var dow = getDayOfWeek(curYear, curMonth, curDay);
+  var wk = getWeekNum(curYear, curMonth, curDay);
+  var dayName = DAYS_OF_WEEK[dow];
+  var dayMeals = (WEEKS[wk] || {})[dayName] || {};
+  var label = formatDateLabel(curYear, curMonth, curDay);
+
+  var html = '<div class="date-nav">'
+    + '<button class="nav-btn" onclick="changeDay(-1)">&#8249;</button>'
+    + '<div class="date-center"><div class="date-main">' + label + '</div>'
+    + '<div class="date-sub">Week ' + wk + ' &middot; ' + dayName + '</div></div>'
+    + '<button class="nav-btn" onclick="changeDay(1)">&#8250;</button>'
+    + '</div>'
+    + '<div class="meal-grid">'
+    + buildMealCard(ds, "am", "AM", dayMeals.am)
+    + buildMealCard(ds, "pm", "PM", dayMeals.pm)
+    + '</div>';
+
+  document.getElementById("page-calendar").innerHTML = html;
+}
+
+function buildMealCard(ds, slot, label, mealObj) {
+  var key = ds + "_" + slot;
+  var fed = !!fedLog[key];
+  var addins = addinsLog[key] || {};
+  var addinNames = Object.keys(addins).filter(function(k){ return addins[k] > 0; });
+
+  var html = '<div class="meal-card' + (fed ? " fed" : "") + '">'
+    + '<div class="slot-label">' + label + '</div>';
+
+  if (mealObj) {
+    html += '<div class="meal-protein">' + mealObj.protein + '</div>'
+      + '<div class="meal-details">'
+      + mealObj.starch + '<br>'
+      + mealObj.veg + '<br>'
+      + (mealObj.organ ? mealObj.organ : '<span style="color:#444">no organ</span>')
+      + '</div>';
+
+    if (addinNames.length > 0) {
+      html += '<div class="addin-tags">';
+      for (var i=0; i<addinNames.length; i++) {
+        html += '<div class="addin-tag">' + addinNames[i] + ': ' + addins[addinNames[i]] + ' oz</div>';
+      }
+      html += '</div>';
+    }
+
+    html += '<button class="addins-btn" onclick="openModal(\'' + ds + '\',\'' + slot + '\')">+ Add-ins</button>'
+      + '<button class="fed-btn' + (fed ? " active" : "") + '" onclick="toggleFed(\'' + key + '\')">'
+      + (fed ? "&#10003; Fed!" : "Mark Fed") + '</button>';
+  } else {
+    html += '<div style="color:#444;font-size:12px;margin-top:8px">No meal scheduled</div>';
+  }
+
+  return html + '</div>';
+}
+
+function changeDay(n) {
+  advanceDay(n);
+  renderCalendar();
+}
+
+function toggleFed(key) {
+  fedLog[key] = !fedLog[key];
+  try { localStorage.setItem("mya_fed", JSON.stringify(fedLog)); } catch(e) {}
+  renderCalendar();
+}
+
+// ── ADD-INS MODAL ─────────────────────────────────────────────────────────────
+var _modalKey = "";
+
+function openModal(ds, slot) {
+  _modalKey = ds + "_" + slot;
+  var saved = addinsLog[_modalKey] || {};
+
+  // figure out meal name for title
+  var dow = getDayOfWeek(curYear, curMonth, curDay);
+  var wk  = getWeekNum(curYear, curMonth, curDay);
+  var dayName = DAYS_OF_WEEK[dow];
+  var dayMeals = (WEEKS[wk] || {})[dayName] || {};
+  var m = dayMeals[slot];
+  var mName = m ? m.protein : "this meal";
+
+  var rows = "";
+  for (var i=0; i<ADDIN_NAMES.length; i++) {
+    var name = ADDIN_NAMES[i];
+    var safeId = "ai" + i;
+    var val = saved[name] || "";
+    rows += '<div class="ai-row">'
+      + '<span class="ai-name">' + name + '</span>'
+      + '<div class="ai-right">'
+      + '<input class="ai-input" type="number" step="0.25" min="0" max="4" id="' + safeId + '" value="' + val + '" placeholder="0">'
+      + '<span class="ai-unit">oz</span>'
+      + '</div></div>';
+  }
+
+  var html = '<div class="overlay" id="modal-bg">'
+    + '<div class="modal">'
+    + '<div class="modal-head">'
+    + '<div class="modal-title">Add-ins &mdash; ' + mName + '</div>'
+    + '<button class="modal-close" onclick="closeModal()">&#10005;</button>'
+    + '</div>'
+    + '<div class="modal-hint">Enter ounces (0.25, 0.5, 1…)</div>'
+    + rows
+    + '<button class="save-btn" onclick="saveModal()">Save Add-ins</button>'
+    + '</div></div>';
+
+  document.getElementById("modal-root").innerHTML = html;
+
+  // tap outside to close
+  document.getElementById("modal-bg").addEventListener("click", function(e){
+    if (e.target === this) closeModal();
+  });
+}
+
+function closeModal() {
+  document.getElementById("modal-root").innerHTML = "";
+}
+
+function saveModal() {
+  var out = {};
+  for (var i=0; i<ADDIN_NAMES.length; i++) {
+    var el = document.getElementById("ai" + i);
+    if (el) {
+      var v = parseFloat(el.value);
+      if (v > 0) out[ADDIN_NAMES[i]] = v;
+    }
+  }
+  addinsLog[_modalKey] = out;
+  try { localStorage.setItem("mya_addins", JSON.stringify(addinsLog)); } catch(e) {}
+  closeModal();
+  renderCalendar();
+}
+
+// ── NUTRITION ─────────────────────────────────────────────────────────────────
+function renderNutrition() {
+  var sum = zeroNutr();
+  var mealCount = 0;
+  var now = new Date();
+
+  for (var i=0; i<30; i++) {
+    var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    var y=d.getFullYear(), m=d.getMonth(), dd=d.getDate();
+    var ds = dateKey(y, m, dd);
+    var dow = d.getDay();
+    var wk  = getWeekNum(y, m, dd);
+    var dayName = DAYS_OF_WEEK[dow];
+    var dayMeals = (WEEKS[wk] || {})[dayName] || {};
+
+    var slots = ["am","pm"];
+    for (var s=0; s<2; s++) {
+      var key = ds + "_" + slots[s];
+      if (fedLog[key]) {
+        mealCount++;
+        var addins = addinsLog[key] || {};
+        var n = calcMeal(dayMeals[slots[s]], addins);
+        for (var j=0; j<KEYS.length; j++) sum[KEYS[j]] += n[KEYS[j]];
+      }
+    }
+  }
+
+  var el = document.getElementById("page-nutrition");
+
+  if (mealCount === 0) {
+    el.innerHTML = '<div class="empty-state">'
+      + '<div style="font-size:40px;margin-bottom:16px">🐾</div>'
+      + '<div style="font-size:16px;color:#888">No meals logged yet</div>'
+      + '<div style="font-size:13px;color:#555;margin-top:8px">Mark meals as Fed in the Calendar tab</div>'
+      + '</div>';
+    return;
+  }
+
+  var days = Math.round(mealCount / 2);
+  var avg = {};
+  for (var j=0; j<KEYS.length; j++) avg[KEYS[j]] = sum[KEYS[j]] / (mealCount / 2);
+
+  var ok=0, low=0, high=0;
+  for (var a=0; a<AAFCO.length; a++) {
+    var cfg=AAFCO[a], v=avg[cfg.k];
+    if (v < cfg.min) low++;
+    else if (cfg.max < 999 && v > cfg.max) high++;
+    else ok++;
+  }
+
+  var html = '<div class="summary-box">'
+    + '<div class="summary-title">30-Day Nutrition Snapshot</div>'
+    + '<div class="summary-sub">' + mealCount + ' meals &middot; ~' + days + ' days &middot; daily average</div>'
+    + '<div class="pill-row">'
+    + '<div class="s-pill" style="background:rgba(76,175,80,.15);color:#4caf50">&#10003; ' + ok + ' Optimal</div>'
+    + (low  > 0 ? '<div class="s-pill" style="background:rgba(244,67,54,.15);color:#f44336">&#9888; ' + low  + ' Low</div>'  : '')
+    + (high > 0 ? '<div class="s-pill" style="background:rgba(255,152,0,.15);color:#ff9800">&#9888; ' + high + ' High</div>' : '')
+    + '</div></div>';
+
+  for (var a=0; a<AAFCO.length; a++) {
+    var cfg = AAFCO[a];
+    var v = avg[cfg.k];
+    var status = v < cfg.min ? "low" : (cfg.max < 999 && v > cfg.max ? "high" : "ok");
+    var pct = cfg.max < 9000
+      ? Math.min((v / cfg.max) * 100, 100)
+      : Math.min((v / (cfg.min * 1.5)) * 100, 100);
+    var display = v >= 10 ? Math.round(v) : v.toFixed(2);
+    var range = cfg.max < 9000 ? cfg.min + "–" + cfg.max : cfg.min + "+";
+    var barColor = status==="ok" ? "#4caf50" : status==="low" ? "#f44336" : "#ff9800";
+    var pillBg   = status==="ok" ? "rgba(76,175,80,.15)"  : status==="low" ? "rgba(244,67,54,.15)" : "rgba(255,152,0,.15)";
+    var pillColor= status==="ok" ? "#4caf50" : status==="low" ? "#f44336" : "#ff9800";
+    var pillText = status==="ok" ? "&#10003; OK" : status==="low" ? "LOW" : "HIGH";
+
+    html += '<div class="n-card">'
+      + '<div class="n-head">'
+      + '<span class="n-name">' + cfg.label + '</span>'
+      + '<span class="n-val">' + display + ' ' + cfg.unit
+      + '<span class="n-pill" style="background:' + pillBg + ';color:' + pillColor + '">' + pillText + '</span>'
+      + '</span></div>'
+      + '<div class="bar-bg"><div class="bar-fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>'
+      + '<div class="n-range">Target: ' + range + ' ' + cfg.unit + '</div>'
+      + '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
+// ── RECIPES ───────────────────────────────────────────────────────────────────
+function renderRecipes() {
+  var html = '<div class="recipe-card">'
+    + '<div class="r-title">&#127997; Fish Days</div>'
+    + '<div style="margin-bottom:8px"><div style="font-size:13px;font-weight:600">Sardines (canned)</div>'
+    + '<div style="font-size:11px;color:#888">Thursday &amp; Sunday &mdash; Weeks 1 &amp; 3</div></div>'
+    + '<div style="margin-bottom:8px"><div style="font-size:13px;font-weight:600">Salmon (canned)</div>'
+    + '<div style="font-size:11px;color:#888">Thursday &amp; Sunday &mdash; Weeks 2 &amp; 4</div></div>'
+    + '<div style="font-size:11px;color:#666;margin-top:4px">Fish replaces AM protein. No organ needed on fish days.</div>'
+    + '</div>';
+
+  var recipes = [
+    {
+      title: "Basic Protein Bowl",
+      base:  ["8 oz protein (beef, turkey, lamb, pork, or chicken)",
+              "2.5 oz starch (quinoa, rice, or sweet potato — cooked)",
+              "2.5 oz vegetable (green beans, zucchini, peas, spinach, or carrots)",
+              "0.5 oz organ meat (liver or heart — optional but recommended)"],
+      supps: ["&#189; tsp eggshell powder &#8594; calcium ~800mg",
+              "1 pinch iodized salt &#8594; iodine + sodium",
+              "&#188; tsp psyllium husk powder &#8594; fiber",
+              "&#188; tsp mixed tocopherols &#8594; Vitamin E ~3.4 IU",
+              "&#188; tsp fresh ginger &#8594; digestive support",
+              "1 pinch fresh spearmint &#8594; breath + digestion",
+              "1&#189; tbsp bone broth or water"],
+      opt:   ["&#189; tsp fish oil &#8594; omega-3 EPA+DHA",
+              "&#189; tsp coconut oil &#8594; MCTs",
+              "&#189; tbsp bone broth (instead of water)"]
+    },
+    {
+      title: "Enriched Protein Bowl",
+      base:  ["Same base as Basic (8 oz protein + 2.5 oz starch + 2.5 oz veg + 0.5 oz organ)"],
+      supps: ["&#189; tsp eggshell powder &#8594; calcium ~800mg",
+              "1 pinch iodized salt &#8594; iodine",
+              "&#188; tsp psyllium husk powder &#8594; fiber",
+              "&#188; tsp mixed tocopherols &#8594; Vitamin E",
+              "&#188; tsp fresh ginger &#8594; digestion",
+              "1 pinch spearmint &#8594; breath",
+              "1 tbsp bone broth (replaces water) &#8594; collagen + minerals",
+              "&#188; tsp fish oil &#8594; omega-3"],
+      opt:   ["&#188; tsp cod liver oil &#8594; Vitamins A + D",
+              "&#189; oz blueberries &#8594; antioxidants",
+              "&#189; tsp sunflower oil &#8594; linoleic acid (omega-6)"]
+    }
+  ];
+
+  for (var i=0; i<recipes.length; i++) {
+    var r = recipes[i];
+    html += '<div class="recipe-card">'
+      + '<div class="r-title">' + r.title + '</div>'
+      + '<div class="r-section">Base (16 oz total)</div>'
+      + r.base.map(function(x){ return '<div class="r-item">&bull; ' + x + '</div>'; }).join("")
+      + '<div class="r-section">Per-Meal Supplements</div>'
+      + r.supps.map(function(x){ return '<div class="r-item">&bull; ' + x + '</div>'; }).join("")
+      + '<div class="r-section">Optional Add-ins</div>'
+      + r.opt.map(function(x){ return '<div class="r-item opt">&circ; ' + x + '</div>'; }).join("")
+      + '</div>';
+  }
+
+  html += '<div class="recipe-card">'
+    + '<div class="r-title">4-Week Protein Rotation</div>'
+    + [["Week 1","Beef + Turkey"],["Week 2","Lamb + Pork"],["Week 3","Turkey + Chicken"],["Week 4","Pork + Beef"]]
+      .map(function(r){ return '<div style="display:flex;gap:12px;margin-bottom:6px"><span style="font-size:11px;color:#888;width:50px;font-weight:700">'+r[0]+'</span><span style="font-size:13px">'+r[1]+'</span></div>'; })
+      .join("")
+    + '<div style="font-size:11px;color:#666;margin-top:8px">&#8635; Repeats forever &middot; Fish days rotate sardines &amp; salmon</div>'
+    + '</div>';
+
+  document.getElementById("page-recipes").innerHTML = html;
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+renderCalendar();
+</script>
+</body>
+</html>
