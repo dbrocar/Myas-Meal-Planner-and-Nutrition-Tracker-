@@ -1,1768 +1,1388 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <title>Mya's Meal Planner 🐾</title>
-
 <style>
-
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-
 body{background:#0f1720;color:#e8dcc8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;}
-
 .header{background:#0a1018;padding:14px 20px 0;border-bottom:1px solid rgba(200,147,58,0.25);position:sticky;top:0;z-index:100;}
-
 .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
-
 .app-title{font-size:19px;font-weight:700;color:#c8933a;}
-
 .app-sub{font-size:10px;color:#666;margin-bottom:10px;}
-
 .tabs{display:flex;}
-
-.tab{flex:1;padding:9px 1px;font-size:10px;font-weight:600;color:#666;background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:.1px;}
-
+.tab{flex:1;padding:9px 2px;font-size:11px;font-weight:600;color:#666;background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:.2px;}
 .tab.active{color:#c8933a;border-bottom-color:#c8933a;}
-
 .page{padding:14px;padding-bottom:80px;display:none;}
-
 .page.active{display:block;}
-
 /* Plan tab */
-
 .section-title{font-size:13px;font-weight:700;color:#c8933a;margin-bottom:10px;margin-top:4px;}
-
 .aafco-group{margin-bottom:14px;}
-
 .aafco-group-label{font-size:10px;font-weight:700;color:#555;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
-
 .aafco-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
-
 .aafco-cell{background:#1a2535;border-radius:7px;padding:7px 9px;}
-
 .aafco-cell-name{font-size:10px;color:#888;margin-bottom:2px;}
-
 .aafco-cell-val{font-size:12px;font-weight:700;color:#e8dcc8;}
-
 /* Rotation */
-
 .rotation-week{background:#1a2535;border-radius:12px;padding:12px;margin-bottom:10px;}
-
 .rotation-week-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-
 .rotation-week-title{font-size:13px;font-weight:700;color:#e8dcc8;}
-
 .fish-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:rgba(33,150,243,0.2);color:#64b5f6;}
-
 .rotation-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;}
-
 .day-cell{flex-shrink:0;width:44px;border-radius:8px;padding:6px 4px;text-align:center;}
-
 .day-cell.land{background:#0f1a28;}
-
 .day-cell.fish{background:rgba(33,150,243,0.15);border:1px solid rgba(100,181,246,0.3);}
-
 .day-cell-name{font-size:9px;font-weight:700;color:#888;margin-bottom:4px;}
-
 .day-cell-am{font-size:9px;color:#e8dcc8;line-height:1.3;margin-bottom:2px;}
-
 .day-cell-pm{font-size:9px;color:#888;line-height:1.3;}
-
 .fish-icon{font-size:11px;}
-
 /* Calendar */
-
 .date-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;background:#1a2535;border-radius:12px;padding:11px 14px;}
-
 .nav-btn{background:rgba(200,147,58,0.15);border:1px solid rgba(200,147,58,0.3);color:#c8933a;border-radius:8px;padding:7px 16px;font-size:20px;cursor:pointer;line-height:1;}
-
 .date-center{text-align:center;}
-
 .date-main{font-size:15px;font-weight:700;}
-
 .date-sub{font-size:10px;color:#888;margin-top:2px;}
-
 .meal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-
 .meal-card{background:#1a2535;border:1px solid rgba(200,147,58,0.2);border-radius:12px;padding:11px;}
-
 .meal-card.fed{background:#1a2f1a;border-color:rgba(76,175,80,0.4);}
-
 .slot-label{font-size:9px;font-weight:700;color:#666;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
-
 .meal-protein{font-size:13px;font-weight:700;margin-bottom:3px;line-height:1.3;}
-
 .meal-details{font-size:10px;color:#888;line-height:1.6;}
-
-.addin-tags{margin-top:6px;padding:5px 7px;background:rgba(200,147,58,0.08);border-radius:6px;}
-
-.addin-tag{font-size:10px;color:#c8933a;}
-
+.oz-tag{font-size:9px;color:#666;font-weight:400;}
+.recipe-list{margin-top:4px;}
+.recipe-line{font-size:10px;color:#999;line-height:1.7;display:flex;justify-content:space-between;}
+.recipe-line.supp{color:#777;font-style:italic;}
+.recipe-divider{height:1px;background:rgba(255,255,255,0.06);margin:6px 0;}
+.addl-box{background:#1a2535;border:1px solid rgba(200,147,58,0.2);border-radius:12px;padding:13px;margin-top:10px;}
+.addl-title{font-size:11px;font-weight:700;color:#c8933a;letter-spacing:.3px;margin-bottom:8px;}
+.addl-list{margin-bottom:8px;}
+.addl-item{font-size:11px;color:#e8dcc8;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.addl-empty{font-size:11px;color:#555;margin-bottom:8px;}
 .addins-btn{width:100%;margin-top:7px;padding:6px 0;background:transparent;border:1px solid rgba(200,147,58,0.35);color:#c8933a;border-radius:7px;font-size:10px;cursor:pointer;}
-
 .fed-btn{width:100%;margin-top:7px;padding:8px 0;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;background:#c8933a;color:#0f1720;}
-
 .fed-btn.active{background:#4caf50;color:#fff;}
-
 /* Nutrition */
-
 .summary-box{background:#1a2535;border-radius:12px;padding:13px;margin-bottom:10px;}
-
 .summary-title{font-size:13px;font-weight:700;margin-bottom:3px;}
-
 .summary-sub{font-size:10px;color:#888;margin-bottom:8px;}
-
 .pill-row{display:flex;gap:7px;flex-wrap:wrap;}
-
 .s-pill{padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;}
-
 .n-card{background:#1a2535;border-radius:9px;padding:11px;margin-bottom:7px;}
-
 .n-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
-
 .n-name{font-size:12px;font-weight:700;}
-
 .n-val{font-size:10px;}
-
 .n-pill{display:inline-block;padding:2px 6px;border-radius:99px;font-size:9px;font-weight:700;margin-left:5px;}
-
 .bar-bg{height:5px;background:#0a1018;border-radius:3px;margin-bottom:3px;overflow:hidden;}
-
 .bar-fill{height:100%;border-radius:3px;}
-
 .n-range{font-size:9px;color:#555;}
-
 /* Guide */
-
 .guide-card{background:#1a2535;border-radius:12px;padding:14px;margin-bottom:10px;}
-
 .guide-title{font-size:14px;font-weight:700;color:#c8933a;margin-bottom:10px;}
-
 .guide-section{font-size:9px;font-weight:700;color:#555;letter-spacing:1px;text-transform:uppercase;margin-top:10px;margin-bottom:5px;}
-
 .guide-item{font-size:12px;color:#b0a090;line-height:1.9;padding-left:4px;}
-
 .guide-item.warn{color:#ff9800;}
-
 .guide-item.avoid{color:#f44336;}
-
 .guide-item.opt{color:#666;}
-
 .protein-row{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
-
 .protein-name{font-size:12px;flex:1;}
-
 .protein-tag{font-size:9px;padding:2px 6px;border-radius:99px;font-weight:700;}
-
 .tag-lean{background:rgba(76,175,80,0.15);color:#4caf50;}
-
 .tag-mod{background:rgba(200,147,58,0.15);color:#c8933a;}
-
 .tag-high{background:rgba(244,67,54,0.15);color:#f44336;}
-
 .organ-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
-
 .organ-name{font-size:12px;}
-
 .organ-freq{font-size:10px;color:#888;text-align:right;}
-
 .organ-note{font-size:9px;color:#555;text-align:right;}
-
+.calc-formula{font-size:11px;color:#888;text-align:center;background:#0f1720;border-radius:8px;padding:9px;margin-bottom:14px;font-family:'SF Mono',Menlo,monospace;line-height:1.6;}
+.calc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;}
+.calc-label{font-size:12px;color:#aaa;flex-shrink:0;}
+.calc-input{width:80px;padding:8px 10px;background:#0f1720;border:1px solid rgba(200,147,58,0.3);border-radius:8px;color:#e8dcc8;font-size:14px;text-align:center;}
+.calc-select{flex:1;max-width:230px;padding:8px 10px;background:#0f1720;border:1px solid rgba(200,147,58,0.3);border-radius:8px;color:#e8dcc8;font-size:12px;}
+.calc-result{margin-top:10px;background:#0f1720;border-radius:10px;padding:4px 12px;}
+.calc-out{display:flex;justify-content:space-between;font-size:12px;color:#999;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.calc-out:last-child{border-bottom:none;}
+.calc-out.highlight{color:#c8933a;font-weight:700;font-size:13px;}
+.calc-note{font-size:10px;color:#555;margin-top:10px;line-height:1.5;}
+.usda-key-row{margin-bottom:12px;}
+.usda-key-input{width:100%;padding:9px 10px;background:#0f1720;border:1px solid rgba(200,147,58,0.3);border-radius:8px;color:#e8dcc8;font-size:12px;margin-bottom:5px;}
+.usda-key-hint{font-size:10px;color:#666;}
+.usda-key-hint a{color:#c8933a;}
+.usda-search-row{display:flex;gap:8px;margin-bottom:10px;}
+.usda-search-input{flex:1;padding:10px 12px;background:#0f1720;border:1px solid rgba(200,147,58,0.3);border-radius:8px;color:#e8dcc8;font-size:13px;}
+.usda-search-btn{padding:10px 16px;background:#c8933a;border:none;border-radius:8px;color:#0f1720;font-weight:700;font-size:13px;cursor:pointer;}
+.usda-types-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.usda-type-chip{font-size:10px;padding:5px 10px;border-radius:99px;border:1px solid rgba(200,147,58,0.3);background:transparent;color:#888;cursor:pointer;}
+.usda-type-chip.on{background:rgba(200,147,58,0.18);color:#c8933a;border-color:#c8933a;}
+.usda-status{font-size:11px;color:#888;margin-bottom:8px;}
+.usda-status.err{color:#f44336;}
+.usda-result-item{padding:9px 10px;background:#0f1720;border-radius:8px;margin-bottom:6px;cursor:pointer;}
+.usda-result-name{font-size:12px;color:#e8dcc8;margin-bottom:3px;}
+.usda-result-meta{font-size:10px;color:#666;}
+.usda-result-badge{display:inline-block;padding:1px 7px;border-radius:99px;font-size:9px;font-weight:700;background:rgba(100,181,246,0.15);color:#64b5f6;margin-left:6px;}
+.usda-detail{margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;}
+.usda-detail-title{font-size:13px;font-weight:700;color:#c8933a;margin-bottom:8px;}
+.usda-nutrient-table{margin-bottom:12px;}
+.usda-nutrient-row{display:flex;justify-content:space-between;font-size:11px;color:#999;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.usda-snippet{width:100%;min-height:70px;background:#0f1720;border:1px solid rgba(200,147,58,0.3);border-radius:8px;color:#4caf50;font-size:11px;font-family:'SF Mono',Menlo,monospace;padding:10px;resize:vertical;margin-bottom:8px;}
+.usda-approx-note{font-size:9px;color:#666;margin-top:6px;line-height:1.5;}
+.usda-modal-toggle{font-size:11px;color:#c8933a;cursor:pointer;margin:12px 0 10px;text-decoration:underline;display:inline-block;}
+.usda-modal-panel{background:#0f1720;border-radius:10px;padding:12px;margin-bottom:14px;}
 /* Modal */
-
 .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:200;display:flex;align-items:flex-end;}
-
 .modal{background:#1a2535;border-radius:16px 16px 0 0;width:100%;padding:20px;max-height:78vh;overflow-y:auto;}
-
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-
 .modal-title{font-size:15px;font-weight:700;color:#c8933a;}
-
 .modal-close{background:transparent;border:none;color:#888;font-size:22px;cursor:pointer;line-height:1;}
-
 .modal-hint{font-size:11px;color:#666;margin-bottom:12px;}
-
 .ai-row{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
-
 .ai-name{font-size:13px;flex:1;}
-
 .ai-input{width:56px;padding:6px 8px;background:#0f1720;border:1px solid rgba(200,147,58,0.3);border-radius:7px;color:#e8dcc8;font-size:14px;text-align:center;}
-
 .ai-unit{font-size:10px;color:#666;margin-left:5px;}
-
 .save-btn{width:100%;padding:13px;background:#c8933a;border:none;border-radius:10px;color:#0f1720;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;}
-
 .empty-state{text-align:center;padding-top:60px;}
-
 /* History */
-
 .view-toggle{display:flex;gap:6px;margin-bottom:12px;}
-
 .view-btn{flex:1;padding:9px 0;border-radius:9px;border:1px solid rgba(200,147,58,0.3);background:transparent;color:#888;font-size:12px;font-weight:700;cursor:pointer;}
-
 .view-btn.active{background:#c8933a;color:#0f1720;border-color:#c8933a;}
-
 .hist-nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;background:#1a2535;border-radius:12px;padding:10px 14px;}
-
 .hist-period-label{font-size:14px;font-weight:700;text-align:center;flex:1;}
-
 .week-day-row{background:#1a2535;border-radius:10px;padding:10px 12px;margin-bottom:8px;}
-
 .week-day-row.today{border:1px solid rgba(200,147,58,0.5);}
-
 .week-day-name{font-size:12px;font-weight:700;color:#e8dcc8;}
-
 .week-meals{display:flex;gap:8px;margin-top:7px;}
-
 .week-meal-pill{flex:1;font-size:10px;padding:6px 8px;border-radius:7px;background:#0f1720;color:#888;}
-
 .week-meal-pill.fed{background:rgba(76,175,80,0.15);color:#4caf50;}
-
 .week-note{margin-top:8px;font-size:11px;color:#c8933a;padding:7px 9px;background:rgba(200,147,58,0.06);border-radius:7px;cursor:pointer;word-break:break-word;}
-
 .month-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;}
-
 .month-weekday-cell{text-align:center;font-size:10px;color:#666;font-weight:700;}
-
 .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-
 .month-cell{aspect-ratio:1;background:#1a2535;border-radius:8px;padding:4px;position:relative;cursor:pointer;}
-
 .month-cell.empty{background:transparent;cursor:default;}
-
 .month-cell.today{border:1px solid #c8933a;}
-
 .month-cell.full-fed{background:rgba(76,175,80,0.12);}
-
 .month-cell.half-fed{background:rgba(255,152,0,0.10);}
-
 .month-cell-day{font-size:11px;font-weight:600;color:#e8dcc8;}
-
 .month-cell-dots{display:flex;gap:3px;margin-top:4px;}
-
 .m-dot{width:5px;height:5px;border-radius:50%;background:#3a3a4a;}
-
 .m-dot.on{background:#4caf50;}
-
 .note-dot{position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:#c8933a;}
-
 .year-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-
 .mini-month{background:#1a2535;border-radius:10px;padding:8px;cursor:pointer;}
-
 .mini-month-label{font-size:11px;font-weight:700;color:#c8933a;margin-bottom:5px;text-align:center;}
-
 .mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
-
 .mini-cell{aspect-ratio:1;border-radius:2px;background:#0f1720;}
-
 .mini-cell.empty{background:transparent;}
-
 .mini-cell.full{background:#4caf50;}
-
 .mini-cell.half{background:#ff9800;}
-
 .dd-label{font-size:10px;font-weight:700;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
-
 .dd-protein{font-size:14px;font-weight:700;margin-bottom:2px;}
-
 .dd-detail{font-size:11px;color:#888;margin-bottom:4px;}
-
 .day-detail-meal{padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
-
 .note-textarea{width:100%;min-height:90px;background:#0f1720;border:1px solid rgba(200,147,58,0.3);border-radius:8px;color:#e8dcc8;font-size:13px;padding:10px;font-family:inherit;resize:vertical;margin-top:8px;}
-
+.hist-divider{height:1px;background:rgba(200,147,58,0.15);margin:22px 0 16px;}
+.actual-toggle{display:flex;align-items:center;gap:8px;font-size:12px;color:#aaa;margin-bottom:14px;cursor:pointer;}
+.actual-toggle input{width:16px;height:16px;accent-color:#c8933a;}
 </style>
-
 </head>
-
 <body>
 
- 
-
 <div class="header">
-
   <div class="header-top">
-
     <div>
-
       <div class="app-title">Mya's Meal Planner &#x1F43E;</div>
-
       <div class="app-sub">Pit Bull &bull; 60 lb &bull; 3 yrs &bull; Spayed &bull; Moderate activity &bull; 16 oz/meal &bull; 2 meals/day &bull; ~1,350 kcal/day</div>
-
     </div>
-
   </div>
-
   <div class="tabs">
-
-    <button class="tab active" id="tab-plan"      onclick="showTab('plan')">&#128203; Plan</button>
-
-    <button class="tab"        id="tab-calendar"  onclick="showTab('calendar')">&#128197; Calendar</button>
-
-    <button class="tab"        id="tab-history"   onclick="showTab('history')">&#128220; History</button>
-
+    <button class="tab active" id="tab-guide"     onclick="showTab('guide')">&#128214; Guide</button>
+    <button class="tab"        id="tab-plan"      onclick="showTab('plan')">&#128203; Plan</button>
+    <button class="tab"        id="tab-calendar"  onclick="showTab('calendar')">&#128197; Feeding Schedule</button>
     <button class="tab"        id="tab-nutrition" onclick="showTab('nutrition')">&#128202; Nutrition</button>
-
-    <button class="tab"        id="tab-guide"     onclick="showTab('guide')">&#128214; Guide</button>
-
   </div>
-
 </div>
 
- 
-
-<div class="page active" id="page-plan"></div>
-
+<div class="page active" id="page-guide"></div>
+<div class="page"        id="page-plan"></div>
 <div class="page"        id="page-calendar"></div>
-
-<div class="page"        id="page-history"></div>
-
 <div class="page"        id="page-nutrition"></div>
-
-<div class="page"        id="page-guide"></div>
-
 <div id="modal-root"></div>
 
- 
-
 <script>
-
 // ── AAFCO TARGETS ─────────────────────────────────────────────────────────────
-
 var AAFCO = [
-
   {k:"protein",    label:"Protein",         unit:"g",   min:45.0,  max:999,  group:"Macros"},
-
   {k:"fat",        label:"Fat",             unit:"g",   min:13.8,  max:55,   group:"Macros"},
-
   {k:"calcium",    label:"Calcium",         unit:"mg",  min:1250,  max:2500, group:"Minerals"},
-
   {k:"phosphorus", label:"Phosphorus",      unit:"mg",  min:1000,  max:4000, group:"Minerals"},
-
   {k:"potassium",  label:"Potassium",       unit:"mg",  min:1378,  max:9999, group:"Minerals"},
-
   {k:"sodium",     label:"Sodium",          unit:"mg",  min:200,   max:1500, group:"Minerals"},
-
   {k:"chloride",   label:"Chloride",        unit:"mg",  min:300,   max:9999, group:"Minerals"},
-
   {k:"magnesium",  label:"Magnesium",       unit:"mg",  min:150,   max:9999, group:"Minerals"},
-
   {k:"iron",       label:"Iron",            unit:"mg",  min:10,    max:250,  group:"Minerals"},
-
   {k:"copper",     label:"Copper",          unit:"mg",  min:1.83,  max:25,   group:"Minerals"},
-
   {k:"zinc",       label:"Zinc",            unit:"mg",  min:15.0,  max:100,  group:"Minerals"},
-
   {k:"iodine",     label:"Iodine",          unit:"mg",  min:0.22,  max:2.75, group:"Minerals"},
-
   {k:"selenium",   label:"Selenium",        unit:"mcg", min:87.5,  max:500,  group:"Minerals"},
-
   {k:"omega3",     label:"Omega-3",         unit:"mg",  min:110,   max:9999, group:"Fatty Acids"},
-
   {k:"omega6",     label:"Omega-6",         unit:"mg",  min:2800,  max:9999, group:"Fatty Acids"},
-
   {k:"vitA",       label:"Vitamin A",       unit:"IU",  min:1278,  max:50000,group:"Vitamins"},
-
   {k:"vitD",       label:"Vitamin D",       unit:"IU",  min:136,   max:1800, group:"Vitamins"},
-
   {k:"vitE",       label:"Vitamin E",       unit:"IU",  min:11,    max:9999, group:"Vitamins"},
-
   {k:"vitK",       label:"Vitamin K",       unit:"mcg", min:82,    max:9999, group:"Vitamins"},
-
   {k:"vitB1",      label:"Thiamine B1",     unit:"mg",  min:0.56,  max:9999, group:"Vitamins"},
-
   {k:"vitB2",      label:"Riboflavin B2",   unit:"mg",  min:1.3,   max:9999, group:"Vitamins"},
-
   {k:"vitB3",      label:"Niacin B3",       unit:"mg",  min:4.25,  max:9999, group:"Vitamins"},
-
   {k:"vitB5",      label:"Pantothenic B5",  unit:"mg",  min:4.0,   max:9999, group:"Vitamins"},
-
   {k:"vitB6",      label:"Pyridoxine B6",   unit:"mg",  min:0.375, max:9999, group:"Vitamins"},
-
   {k:"vitB12",     label:"Cobalamin B12",   unit:"mcg", min:9.0,   max:9999, group:"Vitamins"},
-
   {k:"folate",     label:"Folate",          unit:"mcg", min:68,    max:9999, group:"Vitamins"},
-
   {k:"choline",    label:"Choline",         unit:"mg",  min:425,   max:9999, group:"Vitamins"}
-
 ];
-
 var KEYS = AAFCO.map(function(a){return a.k;});
 
- 
-
 function mkN(pr,fa,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch){
-
   return {protein:pr,fat:fa,calcium:ca,phosphorus:ph,potassium:po,sodium:so,chloride:cl,magnesium:mg,iron:fe,copper:cu,zinc:zn,iodine:io,selenium:se,omega3:o3,omega6:o6,vitA:vA,vitD:vD,vitE:vE,vitK:vK,vitB1:b1,vitB2:b2,vitB3:b3,vitB5:b5,vitB6:b6,vitB12:b12,folate:fo,choline:ch};
-
 }
 
- 
-
 // ── FOODS (per oz) ────────────────────────────────────────────────────────────
-
 var FOODS = {
-
   // Proteins
-
   "Beef (85/15)":      mkN(5.9,3.8,5,53,80,20,30,5,0.7,0.04,1.5,0.001,5,55,180,0,0.7,0.1,0,0.02,0.06,1.3,0.22,0.11,0.9,2,20),
-
   "Ground Turkey":     mkN(5.6,3.8,9,52,82,25,38,6,0.5,0.03,1.0,0.001,6,55,280,0,0.5,0.1,0,0.02,0.07,1.5,0.3,0.14,0.5,3,22),
-
   "Ground Chicken":    mkN(5.5,4.2,6,53,76,23,35,6,0.4,0.03,0.8,0.001,7,45,310,0,0.5,0.1,0,0.02,0.06,1.8,0.35,0.16,0.1,2,21),
-
   "Pork Loin":         mkN(6.0,1.0,5,60,82,20,30,7,0.3,0.03,1.0,0.001,8,30,120,0,1.2,0.1,0,0.20,0.08,1.5,0.35,0.15,0.3,1,18),
-
   "Sardines (canned)": mkN(5.8,3.2,115,90,95,110,160,9,0.6,0.04,0.8,0.01,12,550,130,27,50,0.3,0.5,0.01,0.07,1.2,0.2,0.04,3.2,3,20),
-
   "Salmon (canned)":   mkN(5.6,3.0,60,82,90,80,120,8,0.4,0.03,0.7,0.008,10,650,120,20,120,0.5,0.1,0.05,0.08,2.0,0.4,0.15,2.5,5,22),
-
   // Organs
-
   "Beef Liver":        mkN(5.6,1.0,2,100,80,22,33,5,1.5,1.9,1.5,0.002,10,30,110,5000,12,0.3,1.5,0.1,0.8,3.5,1.7,0.25,25,80,120),
-
   "Chicken Liver":     mkN(5.3,1.2,3,95,73,26,39,5,2.5,0.9,1.2,0.002,15,40,150,3800,15,0.5,2.0,0.08,0.7,3.0,2.0,0.22,22,130,110),
-
   "Beef Heart":        mkN(5.5,2.0,3,70,80,22,33,5,1.0,0.2,1.2,0.001,5,35,90,5,0.5,0.2,0.2,0.08,0.3,2.5,0.6,0.1,4.5,3,35),
-
   "Kidney":            mkN(5.0,1.0,4,85,80,24,36,5,1.4,0.15,1.0,0.003,20,25,80,500,20,0.2,1.0,0.15,0.6,2.8,1.2,0.2,15,45,70),
-
   // Starches
-
   "Quinoa (cooked)":   mkN(1.1,0.5,10,28,50,3,5,12,0.4,0.06,0.4,0,1.5,10,50,0,0,0.1,0,0.04,0.02,0.2,0.1,0.05,0,20,5),
-
   "Sweet Potato (cooked)":mkN(0.5,0.0,8,13,90,3,5,5,0.2,0.02,0.1,0,0.2,5,15,380,0,0.1,0.5,0.03,0.02,0.2,0.2,0.08,0,3,6),
-
   "Oats (cooked)":     mkN(0.9,0.3,5,25,22,1,2,8,0.2,0.03,0.2,0,0.4,10,40,0,0,0.1,0,0.05,0.01,0.1,0.1,0.01,0,5,4),
-
   "White Rice (cooked)":mkN(0.6,0.1,1,14,15,0,1,4,0.1,0.01,0.1,0,0.4,2,10,0,0,0.0,0,0.01,0.01,0.4,0.1,0.04,0,2,2),
-
   // Vegetables
-
   "Green Beans":       mkN(0.5,0.1,12,10,60,2,3,6,0.2,0.02,0.1,0,0.1,15,8,30,0,0.1,5,0.02,0.02,0.1,0.05,0.02,0,8,5),
-
   "Zucchini":          mkN(0.5,0.1,6,16,90,2,3,7,0.1,0.02,0.1,0,0.1,20,15,10,0,0.1,2,0.02,0.02,0.2,0.1,0.04,0,15,8),
-
   "Bell Peppers":      mkN(0.3,0.1,7,20,175,3,5,10,0.3,0.05,0.1,0,0.1,10,10,150,0,1.5,5,0.04,0.02,0.5,0.2,0.15,0,20,5),
-
   "Carrots":           mkN(0.3,0.0,9,10,80,16,24,4,0.1,0.01,0.1,0,0.1,5,10,440,0,0.2,2,0.02,0.02,0.2,0.1,0.04,0,5,5),
-
   "Peas":              mkN(1.4,0.1,8,23,90,2,3,8,0.4,0.04,0.3,0,0.2,20,20,15,0,0.1,5,0.06,0.03,0.5,0.1,0.04,0,25,10),
-
   "Spinach":           mkN(0.8,0.1,28,13,130,22,33,21,0.8,0.03,0.2,0,0.3,40,8,210,0,0.6,135,0.03,0.06,0.3,0.1,0.06,0,60,7),
-
   "Romaine Lettuce":   mkN(0.3,0.1,15,14,85,4,6,7,0.3,0.02,0.1,0,0.1,35,10,220,0,0.1,50,0.04,0.04,0.2,0.1,0.04,0,50,7),
-
   "Pumpkin (canned)":  mkN(0.3,0.1,7,9,50,1,2,3,0.2,0.01,0.1,0,0.1,5,5,450,0,0.6,2,0.01,0.02,0.1,0.1,0.02,0,4,5)
-
 };
-
- 
 
 // ── ADD-INS ───────────────────────────────────────────────────────────────────
-
 var ADDINS = {
-
   "Blueberries":      mkN(0.2,0.1,2,4,25,0,1,2,0.1,0.01,0.0,0,0.0,3,8,8,0,0.6,5,0.01,0.01,0.1,0.06,0.02,0,2,2),
-
   "Pumpkin (canned)": mkN(0.3,0.1,7,9,50,1,2,3,0.2,0.01,0.1,0,0.1,5,5,450,0,0.6,2,0.01,0.02,0.1,0.1,0.02,0,4,5),
-
   "Carrots":          mkN(0.3,0.0,9,10,80,16,24,4,0.1,0.01,0.1,0,0.1,5,10,440,0,0.2,2,0.02,0.02,0.2,0.1,0.04,0,5,5),
-
   "Sweet Potato":     mkN(0.5,0.0,8,13,90,3,5,5,0.2,0.02,0.1,0,0.2,5,15,380,0,0.1,0.5,0.03,0.02,0.2,0.2,0.08,0,3,6),
-
   "Bone Broth":       mkN(0.8,0.2,8,12,18,90,135,2,0.0,0.01,0.1,0,0.1,5,10,0,0,0.0,0,0.00,0.01,0.1,0.05,0.01,0,0,3),
-
   "Fish Oil":         mkN(0.0,3.2,0,0,0,0,0,0,0.0,0.00,0.0,0,0.0,820,80,0,35,1.5,0,0.00,0.00,0.0,0.0,0.00,0,0,0),
-
   "Cod Liver Oil":    mkN(0.0,2.8,0,0,0,0,0,0,0.0,0.00,0.0,0,0.0,700,50,3200,340,1.0,0,0.00,0.00,0.0,0.0,0.00,0,0,0),
-
   "Sunflower Oil":    mkN(0.0,3.4,0,0,0,0,0,0,0.0,0.00,0.0,0,0.0,5,1800,0,0,5.5,0,0.00,0.00,0.0,0.0,0.00,0,0,0),
-
   "Hard Boiled Egg":  mkN(3.6,3.0,16,56,36,35,52,3,0.4,0.02,0.4,0.012,8,40,100,80,12,0.3,0.1,0.02,0.07,0.02,0.25,0.04,0.4,7,83)
-
 };
-
 var ADDIN_NAMES = Object.keys(ADDINS);
 
- 
-
 // ── SUPPLEMENTS (fixed per meal) ──────────────────────────────────────────────
-
 var SUPPS = mkN(0,0,800,0,0,115,175,0,0,0,0,0.10,0,0,0,0,0,3.4,0,0,0,0,0,0,0,0,0);
 
- 
-
 // ── MEAL ROTATION ─────────────────────────────────────────────────────────────
-
 var DAYS_OF_WEEK = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-
- 
 
 function meal(pr,st,vg,org){ return {protein:pr,starch:st,veg:vg,organ:org||null}; }
 
- 
-
 // Week 1: Beef + Turkey  |  Sardines Thu & Sun
-
 // Week 2: Pork + Chicken |  Salmon   Thu & Sun
-
 // Week 3: Turkey + Beef  |  Sardines Thu & Sun
-
 // Week 4: Chicken + Pork |  Salmon   Thu & Sun
-
 var WEEKS = {
-
   1:{
-
     Sun:{am:meal("Sardines (canned)","Quinoa (cooked)","Green Beans"),       pm:meal("Beef (85/15)","Quinoa (cooked)","Carrots","Beef Heart")},
-
     Mon:{am:meal("Beef (85/15)","Quinoa (cooked)","Green Beans","Beef Heart"),pm:meal("Ground Turkey","Oats (cooked)","Zucchini","Chicken Liver")},
-
     Tue:{am:meal("Beef (85/15)","Sweet Potato (cooked)","Bell Peppers","Beef Heart"),pm:meal("Ground Turkey","Quinoa (cooked)","Carrots","Beef Liver")},
-
     Wed:{am:meal("Beef (85/15)","Oats (cooked)","Romaine Lettuce","Beef Heart"),pm:meal("Ground Turkey","Sweet Potato (cooked)","Green Beans","Chicken Liver")},
-
     Thu:{am:meal("Sardines (canned)","Quinoa (cooked)","Zucchini"),          pm:meal("Ground Turkey","Oats (cooked)","Bell Peppers","Beef Liver")},
-
     Fri:{am:meal("Beef (85/15)","Quinoa (cooked)","Green Beans","Beef Liver"),pm:meal("Ground Turkey","Sweet Potato (cooked)","Carrots","Chicken Liver")},
-
     Sat:{am:meal("Beef (85/15)","Sweet Potato (cooked)","Peas","Beef Heart"), pm:meal("Ground Turkey","Quinoa (cooked)","Romaine Lettuce","Beef Liver")}
-
   },
-
   2:{
-
     Sun:{am:meal("Salmon (canned)","Sweet Potato (cooked)","Green Beans"),   pm:meal("Pork Loin","Quinoa (cooked)","Bell Peppers","Beef Heart")},
-
     Mon:{am:meal("Pork Loin","Quinoa (cooked)","Zucchini","Beef Heart"),     pm:meal("Ground Chicken","Sweet Potato (cooked)","Peas","Beef Liver")},
-
     Tue:{am:meal("Pork Loin","Oats (cooked)","Bell Peppers","Beef Liver"),   pm:meal("Ground Chicken","Quinoa (cooked)","Green Beans","Chicken Liver")},
-
     Wed:{am:meal("Pork Loin","Sweet Potato (cooked)","Carrots","Chicken Liver"),pm:meal("Ground Chicken","Oats (cooked)","Zucchini","Beef Heart")},
-
     Thu:{am:meal("Salmon (canned)","Quinoa (cooked)","Green Beans"),         pm:meal("Ground Chicken","Sweet Potato (cooked)","Romaine Lettuce","Beef Liver")},
-
     Fri:{am:meal("Pork Loin","Quinoa (cooked)","Peas","Beef Heart"),         pm:meal("Ground Chicken","Oats (cooked)","Bell Peppers","Chicken Liver")},
-
     Sat:{am:meal("Pork Loin","Sweet Potato (cooked)","Green Beans","Beef Liver"),pm:meal("Ground Chicken","Quinoa (cooked)","Zucchini","Beef Heart")}
-
   },
-
   3:{
-
     Sun:{am:meal("Sardines (canned)","Quinoa (cooked)","Peas"),              pm:meal("Ground Turkey","Sweet Potato (cooked)","Green Beans","Beef Heart")},
-
     Mon:{am:meal("Ground Turkey","Quinoa (cooked)","Bell Peppers","Chicken Liver"),pm:meal("Beef (85/15)","Sweet Potato (cooked)","Green Beans","Beef Heart")},
-
     Tue:{am:meal("Ground Turkey","Oats (cooked)","Romaine Lettuce","Beef Liver"),pm:meal("Beef (85/15)","Quinoa (cooked)","Zucchini","Chicken Liver")},
-
     Wed:{am:meal("Ground Turkey","Sweet Potato (cooked)","Carrots","Beef Heart"),pm:meal("Beef (85/15)","Oats (cooked)","Bell Peppers","Beef Liver")},
-
     Thu:{am:meal("Sardines (canned)","Quinoa (cooked)","Green Beans"),       pm:meal("Beef (85/15)","Sweet Potato (cooked)","Peas","Chicken Liver")},
-
     Fri:{am:meal("Ground Turkey","Oats (cooked)","Zucchini","Chicken Liver"),pm:meal("Beef (85/15)","Quinoa (cooked)","Carrots","Beef Heart")},
-
     Sat:{am:meal("Ground Turkey","Sweet Potato (cooked)","Peas","Beef Liver"),pm:meal("Beef (85/15)","Quinoa (cooked)","Romaine Lettuce","Beef Heart")}
-
   },
-
   4:{
-
     Sun:{am:meal("Salmon (canned)","Quinoa (cooked)","Zucchini"),            pm:meal("Ground Chicken","Oats (cooked)","Green Beans","Beef Heart")},
-
     Mon:{am:meal("Ground Chicken","Sweet Potato (cooked)","Peas","Beef Heart"),pm:meal("Pork Loin","Quinoa (cooked)","Bell Peppers","Beef Liver")},
-
     Tue:{am:meal("Ground Chicken","Quinoa (cooked)","Bell Peppers","Chicken Liver"),pm:meal("Pork Loin","Oats (cooked)","Zucchini","Beef Heart")},
-
     Wed:{am:meal("Ground Chicken","Oats (cooked)","Carrots","Beef Liver"),   pm:meal("Pork Loin","Sweet Potato (cooked)","Green Beans","Chicken Liver")},
-
     Thu:{am:meal("Salmon (canned)","Sweet Potato (cooked)","Peas"),          pm:meal("Pork Loin","Quinoa (cooked)","Romaine Lettuce","Beef Heart")},
-
     Fri:{am:meal("Ground Chicken","Quinoa (cooked)","Green Beans","Beef Heart"),pm:meal("Pork Loin","Oats (cooked)","Bell Peppers","Beef Liver")},
-
     Sat:{am:meal("Ground Chicken","Sweet Potato (cooked)","Zucchini","Beef Liver"),pm:meal("Pork Loin","Quinoa (cooked)","Carrots","Beef Heart")}
-
   }
-
 };
 
- 
-
 // ── STATE ─────────────────────────────────────────────────────────────────────
+var fedLog       = {};
+var addinsLog    = {};
+var notesLog     = {};
+var USDA_KEY     = "";
+var customAddins = {};
+try { fedLog       = JSON.parse(localStorage.getItem("mya_fed")          || "{}"); } catch(e){}
+try { addinsLog    = JSON.parse(localStorage.getItem("mya_addins")       || "{}"); } catch(e){}
+try { notesLog     = JSON.parse(localStorage.getItem("mya_notes")        || "{}"); } catch(e){}
+try { USDA_KEY     = localStorage.getItem("mya_usda_key")                || "";   } catch(e){}
+try { customAddins = JSON.parse(localStorage.getItem("mya_custom_addins")|| "{}"); } catch(e){}
 
-var fedLog    = {};
+// Merge any USDA-sourced custom ingredients into the live ADDINS table
+(function mergeCustomAddins(){
+  var names=Object.keys(customAddins);
+  for(var i=0;i<names.length;i++) ADDINS[names[i]]=customAddins[names[i]];
+  ADDIN_NAMES=Object.keys(ADDINS);
+})();
 
-var addinsLog = {};
-
-var notesLog  = {};
-
-try { fedLog    = JSON.parse(localStorage.getItem("mya_fed")    || "{}"); } catch(e){}
-
-try { addinsLog = JSON.parse(localStorage.getItem("mya_addins") || "{}"); } catch(e){}
-
-try { notesLog  = JSON.parse(localStorage.getItem("mya_notes")  || "{}"); } catch(e){}
-
- 
+var USDA_DATA_TYPES = ["Foundation","SR Legacy","Survey (FNDDS)","Branded","Experimental"];
+var usdaSelectedTypes = {"Foundation":true,"SR Legacy":true,"Survey (FNDDS)":true,"Branded":true,"Experimental":true};
 
 var today    = new Date();
-
 var curYear  = today.getFullYear();
-
 var curMonth = today.getMonth();
-
 var curDay   = today.getDate();
 
- 
-
 var histYear  = today.getFullYear();
-
 var histMonth = today.getMonth();
-
 var histDay   = today.getDate();
-
 var histView  = "week";
-
- 
+var histMode  = "scheduled"; // "scheduled" | "actual"
 
 function dateKey(y,m,d){ return y+"-"+(m<10?"0"+m:m)+"-"+(d<10?"0"+d:d); }
-
 function getDOW(y,m,d){ return new Date(y,m,d).getDay(); }
-
 function getWK(y,m,d){
-
   var jan1 = new Date(y,0,1);
-
   var doy  = Math.round((new Date(y,m,d)-jan1)/86400000);
-
   return (Math.floor(doy/7)%4)+1;
-
 }
-
 function fmtDate(y,m,d){
-
   var wdays=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-
   var mons=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
   return wdays[getDOW(y,m,d)]+", "+mons[m]+" "+d;
-
 }
-
 function advDay(n){
-
   var dt=new Date(curYear,curMonth,curDay+n);
-
   curYear=dt.getFullYear(); curMonth=dt.getMonth(); curDay=dt.getDate();
-
 }
-
 function addDays(y,m,d,n){ var dt=new Date(y,m,d+n); return {y:dt.getFullYear(),m:dt.getMonth(),d:dt.getDate()}; }
-
 function monthAbbrev(m){ var mons=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; return mons[m]; }
-
 function escapeHtml(s){
-
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-
 }
-
 function startOfWeek(y,m,d){
-
   var dow=getDOW(y,m,d);
-
   var dt=new Date(y,m,d-dow);
-
   return {y:dt.getFullYear(),m:dt.getMonth(),d:dt.getDate()};
-
 }
-
- 
 
 // ── NUTRITION CALC ────────────────────────────────────────────────────────────
-
 function zeroN(){ var t={}; for(var i=0;i<KEYS.length;i++) t[KEYS[i]]=0; return t; }
-
 function addFood(t,src,oz){
-
   if(!src) return;
-
   for(var i=0;i<KEYS.length;i++) t[KEYS[i]]+=(src[KEYS[i]]||0)*oz;
-
 }
-
 function calcMeal(m,addins){
-
   var t=zeroN();
-
   if(m){
-
     addFood(t,FOODS[m.protein],8);
-
     addFood(t,FOODS[m.starch],2.5);
-
     addFood(t,FOODS[m.veg],2.5);
-
     if(m.organ) addFood(t,FOODS[m.organ],0.5);
-
     for(var i=0;i<KEYS.length;i++) t[KEYS[i]]+=(SUPPS[KEYS[i]]||0);
-
   }
-
   if(addins){
-
     var ns=Object.keys(addins);
-
     for(var j=0;j<ns.length;j++){ if(addins[ns[j]]>0) addFood(t,ADDINS[ns[j]],addins[ns[j]]); }
-
   }
-
   return t;
-
 }
-
- 
 
 // ── TAB SWITCHING ─────────────────────────────────────────────────────────────
-
 function showTab(name){
-
-  var all=["plan","calendar","history","nutrition","guide"];
-
+  var all=["guide","plan","calendar","nutrition"];
   for(var i=0;i<all.length;i++){
-
     document.getElementById("page-"+all[i]).className = all[i]===name?"page active":"page";
-
     document.getElementById("tab-"+all[i]).className  = all[i]===name?"tab active":"tab";
-
   }
-
   if(name==="plan")      renderPlan();
-
-  if(name==="calendar")  renderCalendar();
-
-  if(name==="history")   renderHistory();
-
+  if(name==="calendar")  renderCalendarPage();
   if(name==="nutrition") renderNutrition();
-
   if(name==="guide")     renderGuide();
-
 }
 
- 
-
 // ── PLAN TAB ──────────────────────────────────────────────────────────────────
-
 function renderPlan(){
-
   var html = "";
 
- 
-
   // AAFCO Targets
-
   html += '<div class="section-title">AAFCO Daily Nutritional Targets</div>';
-
   html += '<div style="font-size:10px;color:#666;margin-bottom:12px">For Mya &bull; 60 lb adult &bull; ~1,350 kcal/day</div>';
 
- 
-
   var groups = ["Macros","Minerals","Fatty Acids","Vitamins"];
-
   for(var gi=0;gi<groups.length;gi++){
-
     var g=groups[gi];
-
     var items=AAFCO.filter(function(a){return a.group===g;});
-
     html+='<div class="aafco-group"><div class="aafco-group-label">'+g+'</div><div class="aafco-grid">';
-
     for(var ai=0;ai<items.length;ai++){
-
       var a=items[ai];
-
       var range = a.max<9000 ? a.min+" &ndash; "+a.max+" "+a.unit : a.min+"+ "+a.unit;
-
       html+='<div class="aafco-cell"><div class="aafco-cell-name">'+a.label+'</div><div class="aafco-cell-val">'+range+'</div></div>';
-
     }
-
     html+='</div></div>';
-
   }
-
- 
 
   // 4-Week Rotation
-
   html += '<div class="section-title" style="margin-top:6px">4-Week Meal Rotation</div>';
 
- 
-
   var weekDefs = [
-
     {wk:1, main:"Beef & Turkey",    fish:"Sardines (Thu & Sun)",  fishName:"Sardines",  am:"Beef (85/15)", pm:"Ground Turkey"},
-
     {wk:2, main:"Pork & Chicken",   fish:"Salmon (Thu & Sun)",    fishName:"Salmon",    am:"Pork Loin",    pm:"Ground Chicken"},
-
     {wk:3, main:"Turkey & Beef",    fish:"Sardines (Thu & Sun)",  fishName:"Sardines",  am:"Ground Turkey",pm:"Beef (85/15)"},
-
     {wk:4, main:"Chicken & Pork",   fish:"Salmon (Thu & Sun)",    fishName:"Salmon",    am:"Ground Chicken",pm:"Pork Loin"}
-
   ];
 
- 
-
   var dayLabels=["M","T","W","Th","F","Sa","Su"];
-
   var isFish=[false,false,false,true,false,false,true]; // Mon=0 ... Sun=6 in display order
 
- 
-
   for(var wi=0;wi<weekDefs.length;wi++){
-
     var wd=weekDefs[wi];
-
     html+='<div class="rotation-week">'
-
       +'<div class="rotation-week-header">'
-
       +'<div class="rotation-week-title">Week '+wd.wk+' &mdash; '+wd.main+'</div>'
-
       +'<div class="fish-badge">&#127997; '+wd.fishName+'</div>'
-
       +'</div>'
-
       +'<div class="rotation-row">';
 
- 
-
     for(var di=0;di<7;di++){
-
       var fish=isFish[di];
-
       var amProt = fish ? wd.fishName : wd.am.replace("(85/15)","").replace("Ground ","").trim();
-
       var pmProt = wd.pm.replace("Ground ","").trim();
-
       html+='<div class="day-cell '+(fish?"fish":"land")+'">'
-
         +'<div class="day-cell-name">'+dayLabels[di]+'</div>'
-
         +(fish?'<div class="fish-icon">&#127997;</div>':'')
-
         +'<div class="day-cell-am">'+amProt+'</div>'
-
         +'<div class="day-cell-pm" style="color:'+(fish?"#64b5f6":"#888")+'">'+pmProt+'</div>'
-
         +'</div>';
-
     }
-
     html+='</div></div>';
-
   }
-
- 
 
   html+='<div style="font-size:10px;color:#555;margin-top:6px;margin-bottom:16px">&#8635; Rotation repeats every 4 weeks &bull; Fish days = AM meal only &bull; PM is land protein</div>';
 
- 
-
   document.getElementById("page-plan").innerHTML=html;
-
 }
-
- 
 
 // ── CALENDAR ──────────────────────────────────────────────────────────────────
+function isFishMeal(proteinName){
+  return proteinName==="Sardines (canned)" || proteinName==="Salmon (canned)";
+}
 
-function renderCalendar(){
+function buildSupplementLines(isFish){
+  return [
+    "&#189; tsp eggshell powder",
+    "1 pinch iodized salt",
+    "&#188; tsp psyllium husk powder",
+    isFish ? "200 IU Vitamin E oil" : "&#188; tsp mixed tocopherols (Vit E)",
+    isFish ? "1 pinch spearmint (or herb cube)" : "&#8539; tsp ginger (or herb cube)",
+    "1&#189; tbsp reserved cooking liquid or bone broth"
+  ];
+}
 
+function buildCalendarMainHtml(){
   var ds  = dateKey(curYear,curMonth,curDay);
-
   var dow = getDOW(curYear,curMonth,curDay);
-
   var wk  = getWK(curYear,curMonth,curDay);
-
   var dn  = DAYS_OF_WEEK[dow];
-
   var dm  = (WEEKS[wk]||{})[dn]||{};
-
   var lbl = fmtDate(curYear,curMonth,curDay);
 
- 
-
   var html='<div class="date-nav">'
-
     +'<button class="nav-btn" onclick="changeDay(-1)">&#8249;</button>'
-
     +'<div class="date-center"><div class="date-main">'+lbl+'</div>'
-
     +'<div class="date-sub">Week '+wk+' &bull; '+dn+'</div></div>'
-
     +'<button class="nav-btn" onclick="changeDay(1)">&#8250;</button>'
-
     +'</div>'
-
     +'<div class="meal-grid">'
-
     +buildCard(ds,"am","AM",dm.am)
-
     +buildCard(ds,"pm","PM",dm.pm)
+    +'</div>'
+    +buildAdditionalItemsBox(ds);
 
-    +'</div>';
-
- 
-
-  document.getElementById("page-calendar").innerHTML=html;
-
+  return html;
 }
 
- 
+function renderCalendarPage(){
+  var html = buildCalendarMainHtml()
+    + '<div class="hist-divider"></div>'
+    + '<div class="section-title">Feeding History</div>'
+    + buildHistoryHtml();
+  document.getElementById("page-calendar").innerHTML = html;
+}
 
 function buildCard(ds,slot,label,m){
-
   var key=ds+"_"+slot;
-
   var fed=!!fedLog[key];
 
-  var addins=addinsLog[key]||{};
-
-  var ats=Object.keys(addins).filter(function(k){return addins[k]>0;});
-
- 
-
   var h='<div class="meal-card'+(fed?" fed":"")+'">'
-
     +'<div class="slot-label">'+label+'</div>';
 
- 
-
   if(m){
+    var isFish=isFishMeal(m.protein);
+    h+='<div class="meal-protein">'+m.protein+' <span class="oz-tag">8 oz</span></div>';
+    h+='<div class="recipe-list">'
+      +'<div class="recipe-line"><span>'+m.starch+'</span><span class="oz-tag">2.5 oz</span></div>'
+      +'<div class="recipe-line"><span>'+m.veg+'</span><span class="oz-tag">2.5 oz</span></div>';
+    if(m.organ) h+='<div class="recipe-line"><span>'+m.organ+'</span><span class="oz-tag">0.5 oz</span></div>';
+    var supps=buildSupplementLines(isFish);
+    h+='<div class="recipe-divider"></div>';
+    for(var i=0;i<supps.length;i++) h+='<div class="recipe-line supp"><span>'+supps[i]+'</span></div>';
+    h+='</div>';
 
-    h+='<div class="meal-protein">'+m.protein+'</div>'
-
-      +'<div class="meal-details">'+m.starch+'<br>'+m.veg+'<br>'
-
-      +(m.organ?m.organ:'<span style="color:#3a3a4a">no organ</span>')+'</div>';
-
-    if(ats.length>0){
-
-      h+='<div class="addin-tags">';
-
-      for(var i=0;i<ats.length;i++) h+='<div class="addin-tag">'+ats[i]+': '+addins[ats[i]]+'oz</div>';
-
-      h+='</div>';
-
-    }
-
-    h+='<button class="addins-btn" onclick="openModal(\''+ds+'\',\''+slot+'\')">+ Add-ins</button>'
-
-      +'<button class="fed-btn'+(fed?" active":"")+'" onclick="toggleFed(\''+key+'\')">'
-
+    h+='<button class="fed-btn'+(fed?" active":"")+'" onclick="toggleFed(\''+key+'\')">'
       +(fed?"&#10003; Fed!":"Mark Fed")+'</button>';
-
   } else {
-
     h+='<div style="color:#3a3a4a;font-size:11px;margin-top:8px">No meal scheduled</div>';
-
   }
-
   return h+'</div>';
-
 }
 
- 
+function buildAdditionalItemsBox(ds){
+  var addins=addinsLog[ds]||{};
+  var items=Object.keys(addins).filter(function(k){return addins[k]>0;});
 
-function changeDay(n){ advDay(n); renderCalendar(); }
+  var html='<div class="addl-box">'
+    +'<div class="addl-title">Additional Items Fed Today</div>';
 
- 
+  if(items.length>0){
+    html+='<div class="addl-list">';
+    for(var i=0;i<items.length;i++) html+='<div class="addl-item">'+items[i]+': '+addins[items[i]]+' oz</div>';
+    html+='</div>';
+  } else {
+    html+='<div class="addl-empty">No additional items logged</div>';
+  }
+
+  html+='<button class="addins-btn" onclick="openDayAddinsModal(\''+ds+'\')">+ Add Items</button>'
+    +'</div>';
+  return html;
+}
+
+function changeDay(n){ advDay(n); renderCalendarPage(); }
 
 function toggleFed(key){
-
   fedLog[key]=!fedLog[key];
-
   try{localStorage.setItem("mya_fed",JSON.stringify(fedLog));}catch(e){}
-
-  renderCalendar();
-
+  renderCalendarPage();
 }
 
- 
-
-// ── ADD-INS MODAL ─────────────────────────────────────────────────────────────
-
+// ── ADDITIONAL ITEMS MODAL (per day) ─────────────────────────────────────────
 var _mk="";
-
-function openModal(ds,slot){
-
-  _mk=ds+"_"+slot;
-
-  var saved=addinsLog[_mk]||{};
-
-  var dow=getDOW(curYear,curMonth,curDay);
-
-  var wk=getWK(curYear,curMonth,curDay);
-
-  var dn=DAYS_OF_WEEK[dow];
-
-  var dm=(WEEKS[wk]||{})[dn]||{};
-
-  var mn=(dm[slot]?dm[slot].protein:"this meal");
-
- 
-
+function buildAddinRowsHtml(values){
   var rows="";
-
   for(var i=0;i<ADDIN_NAMES.length;i++){
-
     var n=ADDIN_NAMES[i];
-
     rows+='<div class="ai-row"><span class="ai-name">'+n+'</span>'
-
-      +'<input class="ai-input" type="number" step="0.25" min="0" max="4" id="ai'+i+'" value="'+(saved[n]||"")+'" placeholder="0">'
-
+      +'<input class="ai-input" type="number" step="0.25" min="0" max="4" id="ai'+i+'" value="'+(values[n]||"")+'" placeholder="0">'
       +'<span class="ai-unit">oz</span></div>';
-
   }
+  return rows;
+}
 
- 
+function openDayAddinsModal(ds){
+  _mk=ds;
+  var saved=addinsLog[ds]||{};
+  var lbl=fmtDate(curYear,curMonth,curDay);
 
   document.getElementById("modal-root").innerHTML=
-
     '<div class="overlay" id="mbg"><div class="modal">'
-
-    +'<div class="modal-head"><div class="modal-title">Add-ins &mdash; '+mn+'</div>'
-
+    +'<div class="modal-head"><div class="modal-title">Additional Items &mdash; '+lbl+'</div>'
     +'<button class="modal-close" onclick="closeModal()">&#10005;</button></div>'
-
-    +'<div class="modal-hint">Enter ounces for each add-in</div>'
-
-    +rows
-
-    +'<button class="save-btn" onclick="saveModal()">Save Add-ins</button>'
-
+    +'<div class="modal-hint">Enter ounces for anything extra fed today</div>'
+    +'<div id="addinRowsContainer">'+buildAddinRowsHtml(saved)+'</div>'
+    +'<div class="usda-modal-toggle" onclick="toggleUsdaModalPanel()">&#128300; Look up a food on USDA &amp; add it to this list</div>'
+    +'<div class="usda-modal-panel" id="usdaModalPanel" style="display:none">'
+    +'<div class="usda-search-row">'
+    +'<input type="text" id="usdaModalQuery" class="usda-search-input" placeholder="Search a food, e.g. \'sweet potato baked\'" onkeydown="if(event.key===\'Enter\')searchUsdaModal()">'
+    +'<button class="usda-search-btn" onclick="searchUsdaModal()">Search</button>'
+    +'</div>'
+    +'<div class="usda-types-row" id="usdaModalTypesRow">'+buildUsdaTypeChips("usdaModalTypesRow")+'</div>'
+    +(USDA_KEY?"":'<div class="usda-status err">Paste a USDA API key on the Guide tab first.</div>')
+    +'<div class="usda-status" id="usdaModalStatus"></div>'
+    +'<div id="usdaModalResults"></div>'
+    +'</div>'
+    +'<button class="save-btn" onclick="saveModal()">Save Items</button>'
     +'</div></div>';
 
- 
-
   document.getElementById("mbg").addEventListener("click",function(e){if(e.target===this)closeModal();});
+}
 
+function toggleUsdaModalPanel(){
+  var panel=document.getElementById("usdaModalPanel");
+  panel.style.display = (panel.style.display==="none") ? "block" : "none";
+}
+
+function modalUsdaStatus(msg,isErr){
+  var el=document.getElementById("usdaModalStatus");
+  el.className="usda-status"+(isErr?" err":"");
+  el.innerHTML=msg;
+}
+
+function searchUsdaModal(){
+  var q=document.getElementById("usdaModalQuery").value.trim();
+  if(!USDA_KEY){ modalUsdaStatus("Paste your free USDA API key on the Guide tab first.",true); return; }
+  if(!q){ modalUsdaStatus("Type a food name to search.",true); return; }
+
+  var types=[];
+  for(var i=0;i<USDA_DATA_TYPES.length;i++){ if(usdaSelectedTypes[USDA_DATA_TYPES[i]]) types.push(USDA_DATA_TYPES[i]); }
+  if(types.length===0){ modalUsdaStatus("Select at least one data type.",true); return; }
+
+  document.getElementById("usdaModalResults").innerHTML="";
+  modalUsdaStatus("Searching USDA FoodData Central&hellip;",false);
+
+  fetchUsdaSearch(q, types, function(foods){
+    if(foods.length===0){ modalUsdaStatus("No matches found. Try a simpler search term.",false); return; }
+    modalUsdaStatus(foods.length+" results &mdash; tap one to add it", false);
+    renderUsdaModalResults(foods);
+  }, function(msg){ modalUsdaStatus(msg,true); });
+}
+
+function renderUsdaModalResults(foods){
+  var html="";
+  for(var i=0;i<foods.length;i++){
+    var f=foods[i];
+    var name=escapeHtml(f.description||"Unknown");
+    var brand=f.brandOwner?(" &mdash; "+escapeHtml(f.brandOwner)):"";
+    html+='<div class="usda-result-item" onclick="addUsdaFoodToAddins('+f.fdcId+')">'
+      +'<div class="usda-result-name">'+name+'<span class="usda-result-badge">'+escapeHtml(f.dataType||"")+'</span></div>'
+      +'<div class="usda-result-meta">FDC #'+f.fdcId+brand+'</div>'
+      +'</div>';
+  }
+  document.getElementById("usdaModalResults").innerHTML=html;
+}
+
+function collectAddinDraft(){
+  var draft={};
+  for(var i=0;i<ADDIN_NAMES.length;i++){
+    var el=document.getElementById("ai"+i);
+    if(el && el.value) draft[ADDIN_NAMES[i]]=el.value;
+  }
+  return draft;
+}
+
+function addUsdaFoodToAddins(fdcId){
+  modalUsdaStatus("Adding ingredient&hellip;",false);
+  var draft=collectAddinDraft();
+
+  fetchUsdaDetail(fdcId, function(detail){
+    var perOz=per100gToPerOz(extractPer100g(detail));
+    var name=detail.description;
+
+    ADDINS[name]=perOz;
+    customAddins[name]=perOz;
+    try{localStorage.setItem("mya_custom_addins",JSON.stringify(customAddins));}catch(e){}
+    ADDIN_NAMES=Object.keys(ADDINS);
+
+    document.getElementById("addinRowsContainer").innerHTML=buildAddinRowsHtml(draft);
+    document.getElementById("usdaModalResults").innerHTML="";
+    document.getElementById("usdaModalQuery").value="";
+    modalUsdaStatus("&#10003; Added \""+escapeHtml(name)+"\" &mdash; enter ounces above.",false);
+  }, function(msg){
+    modalUsdaStatus(msg,true);
+  });
 }
 
 function closeModal(){ document.getElementById("modal-root").innerHTML=""; }
-
 function saveModal(){
-
   var out={};
-
   for(var i=0;i<ADDIN_NAMES.length;i++){
-
     var el=document.getElementById("ai"+i);
-
     if(el){var v=parseFloat(el.value);if(v>0)out[ADDIN_NAMES[i]]=v;}
-
   }
-
   addinsLog[_mk]=out;
-
   try{localStorage.setItem("mya_addins",JSON.stringify(addinsLog));}catch(e){}
-
-  closeModal(); renderCalendar();
-
+  closeModal(); renderCalendarPage();
 }
-
- 
 
 // ── NUTRITION ─────────────────────────────────────────────────────────────────
-
 function renderNutrition(){
-
   var sum=zeroN(); var cnt=0;
-
   var now=new Date();
-
   for(var i=0;i<30;i++){
-
     var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i);
-
     var y=d.getFullYear(),m=d.getMonth(),dd=d.getDate();
-
     var ds=dateKey(y,m,dd);
-
     var dow=d.getDay(); var wk=getWK(y,m,dd);
-
     var dn=DAYS_OF_WEEK[dow];
-
     var dm=(WEEKS[wk]||{})[dn]||{};
-
     var slots=["am","pm"];
-
+    var dayHasFed=false;
     for(var s=0;s<2;s++){
-
       var key=ds+"_"+slots[s];
-
       if(fedLog[key]){
-
-        cnt++;
-
-        var n=calcMeal(dm[slots[s]],addinsLog[key]||{});
-
+        cnt++; dayHasFed=true;
+        var n=calcMeal(dm[slots[s]]);
         for(var j=0;j<KEYS.length;j++) sum[KEYS[j]]+=n[KEYS[j]];
-
       }
-
     }
-
+    if(dayHasFed){
+      var an=calcMeal(null, addinsLog[ds]||{});
+      for(var j2=0;j2<KEYS.length;j2++) sum[KEYS[j2]]+=an[KEYS[j2]];
+    }
   }
-
   var el=document.getElementById("page-nutrition");
-
   if(cnt===0){
-
     el.innerHTML='<div class="empty-state"><div style="font-size:40px;margin-bottom:14px">&#x1F43E;</div>'
-
       +'<div style="font-size:15px;color:#888">No meals logged yet</div>'
-
       +'<div style="font-size:12px;color:#555;margin-top:8px">Mark meals as Fed in the Calendar tab</div></div>';
-
     return;
-
   }
-
   var days=Math.round(cnt/2);
-
   var avg={};
-
   for(var j=0;j<KEYS.length;j++) avg[KEYS[j]]=sum[KEYS[j]]/(cnt/2);
-
   var ok=0,low=0,high=0;
-
   for(var a=0;a<AAFCO.length;a++){
-
     var cfg=AAFCO[a],v=avg[cfg.k];
-
     if(v<cfg.min) low++; else if(cfg.max<999&&v>cfg.max) high++; else ok++;
-
   }
-
   var html='<div class="summary-box">'
-
     +'<div class="summary-title">30-Day Nutrition Snapshot</div>'
-
     +'<div class="summary-sub">'+cnt+' meals &bull; ~'+days+' days &bull; daily average</div>'
-
     +'<div class="pill-row">'
-
     +'<div class="s-pill" style="background:rgba(76,175,80,.15);color:#4caf50">&#10003; '+ok+' Optimal</div>'
-
     +(low>0?'<div class="s-pill" style="background:rgba(244,67,54,.15);color:#f44336">&#9888; '+low+' Low</div>':'')
-
     +(high>0?'<div class="s-pill" style="background:rgba(255,152,0,.15);color:#ff9800">&#9888; '+high+' High</div>':'')
-
     +'</div></div>';
-
   for(var a=0;a<AAFCO.length;a++){
-
     var cfg=AAFCO[a],v=avg[cfg.k];
-
     var status=v<cfg.min?"low":(cfg.max<999&&v>cfg.max?"high":"ok");
-
     var pct=cfg.max<9000?Math.min((v/cfg.max)*100,100):Math.min((v/(cfg.min*1.5))*100,100);
-
     var disp=v>=10?Math.round(v):v.toFixed(2);
-
     var range=cfg.max<9000?cfg.min+"&ndash;"+cfg.max:cfg.min+"+";
-
     var bc=status==="ok"?"#4caf50":status==="low"?"#f44336":"#ff9800";
-
     var pb=status==="ok"?"rgba(76,175,80,.15)":status==="low"?"rgba(244,67,54,.15)":"rgba(255,152,0,.15)";
-
     var pt=status==="ok"?"&#10003; OK":status==="low"?"LOW":"HIGH";
-
     html+='<div class="n-card">'
-
       +'<div class="n-head"><span class="n-name">'+cfg.label+'</span>'
-
       +'<span class="n-val">'+disp+' '+cfg.unit
-
       +'<span class="n-pill" style="background:'+pb+';color:'+bc+'">'+pt+'</span></span></div>'
-
       +'<div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%;background:'+bc+'"></div></div>'
-
       +'<div class="n-range">Target: '+range+' '+cfg.unit+'</div></div>';
-
   }
-
   el.innerHTML=html;
-
 }
-
- 
 
 // ── GUIDE ─────────────────────────────────────────────────────────────────────
-
 function renderGuide(){
-
   var html="";
 
- 
-
-  // Proteins
-
-  html+='<div class="guide-card"><div class="guide-title">&#127859; Protein Options</div>';
-
-  var proteins=[
-
-    {name:"Beef (85/15)",    fat:"Moderate",  freq:"Weekly",         tag:"mod"},
-
-    {name:"Ground Turkey",   fat:"Lean",      freq:"Weekly",         tag:"lean"},
-
-    {name:"Ground Chicken",  fat:"Lean",      freq:"Weekly",         tag:"lean"},
-
-    {name:"Pork Loin",       fat:"Lean",      freq:"Weekly",         tag:"lean"},
-
-    {name:"Sardines",        fat:"High &ndash; Omega-3s", freq:"2&ndash;3x/wk (fish days)", tag:"high"},
-
-    {name:"Salmon",          fat:"High &ndash; Omega-3s", freq:"2&ndash;3x/wk (fish days)", tag:"high"}
-
-  ];
-
-  for(var i=0;i<proteins.length;i++){
-
-    var p=proteins[i];
-
-    var tagLabel=p.fat;
-
-    html+='<div class="protein-row">'
-
-      +'<span class="protein-name">'+p.name+'</span>'
-
-      +'<span class="protein-tag tag-'+p.tag+'">'+tagLabel+'</span>'
-
-      +'</div>';
-
-  }
-
-  html+='<div style="font-size:10px;color:#555;margin-top:8px">All proteins rotate freely &bull; Rotate to ensure nutritional variety</div>';
-
-  html+='</div>';
-
- 
-
-  // Vegetables
-
-  html+='<div class="guide-card"><div class="guide-title">&#x1F966; Vegetable Guide</div>';
-
-  html+='<div class="guide-section">&#x1F7E2; Green Light &mdash; Rotate Freely (2&ndash;3 oz/meal)</div>';
-
-  var green=["Green beans","Zucchini","Bell peppers","Plain pumpkin puree","Carrots (steamed)","Romaine lettuce"];
-
-  for(var i=0;i<green.length;i++) html+='<div class="guide-item">&bull; '+green[i]+'</div>';
-
- 
-
-  html+='<div class="guide-section">&#x26A0;&#xFE0F; Use Sparingly</div>';
-
-  html+='<div class="guide-item warn">&bull; Spinach &mdash; tiny amounts only (high oxalates)</div>';
-
-  html+='<div class="guide-item warn">&bull; Broccoli florets &mdash; under 10% of meal</div>';
-
- 
-
-  html+='<div class="guide-section">&#x274C; Avoid as Vegetables</div>';
-
-  var avoid=["Sweet potato (use as starch instead)","Lentils &amp; chickpeas","Cabbage","Brussels sprouts"];
-
-  for(var i=0;i<avoid.length;i++) html+='<div class="guide-item avoid">&bull; '+avoid[i]+'</div>';
-
-  html+='</div>';
-
- 
-
-  // Starches
-
-  html+='<div class="guide-card"><div class="guide-title">&#x1F35E; Starch Options (2&ndash;3 oz/meal)</div>';
-
-  var starches=[
-
-    {name:"Quinoa",              prep:"Rinse, cook 15 min",     note:"Complete protein"},
-
-    {name:"Oats (rolled/steel-cut)",prep:"Cook 10&ndash;15 min",note:"Beta-glucans"},
-
-    {name:"Sweet potato",        prep:"Bake or steam, mash",    note:"Beta-carotene"},
-
-    {name:"White rice",          prep:"Cook plain",             note:"Occasional only"}
-
-  ];
-
-  for(var i=0;i<starches.length;i++){
-
-    var st=starches[i];
-
-    html+='<div style="padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05)">'
-
-      +'<div style="display:flex;justify-content:space-between;align-items:center">'
-
-      +'<span style="font-size:12px;font-weight:600">'+st.name+'</span>'
-
-      +'<span style="font-size:10px;color:#888">'+st.note+'</span></div>'
-
-      +'<div style="font-size:10px;color:#666;margin-top:2px">'+st.prep+'</div>'
-
-      +'</div>';
-
-  }
-
-  html+='</div>';
-
- 
-
-  // Organ Meats
-
-  html+='<div class="guide-card"><div class="guide-title">&#10084;&#xFE0F; Organ Meats (0.5 oz)</div>';
-
-  html+='<div style="display:grid;grid-template-columns:1fr auto;gap:4px;font-size:10px;font-weight:700;color:#555;margin-bottom:6px;">'
-
-    +'<div>Organ</div><div>Frequency</div></div>';
-
-  var organs=[
-
-    {name:"Liver (any species)", freq:"2&ndash;3x/week", note:"Max 3.5 oz total/week"},
-
-    {name:"Heart (any species)", freq:"1&ndash;2x/week", note:"Muscle meat, no strict limit"},
-
-    {name:"Kidney (optional)",   freq:"1x/week",         note:"High B12 &amp; selenium"}
-
-  ];
-
-  for(var i=0;i<organs.length;i++){
-
-    var og=organs[i];
-
-    html+='<div style="display:grid;grid-template-columns:1fr auto;gap:4px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">'
-
-      +'<div><div style="font-size:12px">'+og.name+'</div>'
-
-      +'<div style="font-size:10px;color:#555;margin-top:1px">'+og.note+'</div></div>'
-
-      +'<div style="font-size:11px;color:#c8933a;text-align:right;padding-top:2px">'+og.freq+'</div>'
-
-      +'</div>';
-
-  }
-
-  html+='</div>';
-
- 
-
-  // Daily Constants
-
-  html+='<div class="guide-card"><div class="guide-title">&#9881;&#xFE0F; Daily Constants &mdash; Every Meal</div>';
-
-  var consts=[
-
-    "&#189; tsp eggshell powder &rarr; calcium ~800mg",
-
-    "1 small pinch iodized salt &rarr; iodine + sodium",
-
-    "&#188; tsp psyllium husk powder &rarr; fiber",
-
-    "&#188; tsp mixed tocopherols (non-fish) OR 200 IU Vit E oil (fish meals)",
-
-    "&#188; tsp parsley or herb cube",
-
-    "&#8539; tsp ginger or herb cube (all meals except fish)",
-
-    "1 pinch spearmint or herb cube (fish meals)",
-
-    "1&#189; tbsp reserved cooking liquid or bone broth"
-
-  ];
-
-  for(var i=0;i<consts.length;i++) html+='<div class="guide-item">&bull; '+consts[i]+'</div>';
-
-  html+='</div>';
-
- 
-
-  document.getElementById("page-guide").innerHTML=html;
-
-}
-
- 
-
-// ── HISTORY ───────────────────────────────────────────────────────────────────
-
-function setHistView(v){ histView=v; renderHistory(); }
-
- 
-
-function navHistory(dir){
-
-  if(histView==="week"){
-
-    var nd=addDays(histYear,histMonth,histDay,dir*7);
-
-    histYear=nd.y; histMonth=nd.m; histDay=nd.d;
-
-  } else if(histView==="month"){
-
-    var dt=new Date(histYear,histMonth+dir,1);
-
-    histYear=dt.getFullYear(); histMonth=dt.getMonth();
-
-  } else {
-
-    histYear+=dir;
-
-  }
-
-  renderHistory();
-
-}
-
- 
-
-function jumpToMonth(y,m){ histYear=y; histMonth=m; histView="month"; renderHistory(); }
-
- 
-
-function renderHistory(){
-
-  var views=["week","month","year"];
-
-  var toggle='<div class="view-toggle">';
-
-  for(var i=0;i<views.length;i++){
-
-    var v=views[i];
-
-    var lbl=v==="week"?"Week":v==="month"?"Month":"Year";
-
-    toggle+='<button class="view-btn'+(histView===v?" active":"")+'" onclick="setHistView(\''+v+'\')">'+lbl+'</button>';
-
-  }
-
-  toggle+='</div>';
-
- 
-
-  var navLabel="";
-
-  if(histView==="week"){
-
-    var st=startOfWeek(histYear,histMonth,histDay);
-
-    var en=addDays(st.y,st.m,st.d,6);
-
-    navLabel=monthAbbrev(st.m)+" "+st.d+" &ndash; "+monthAbbrev(en.m)+" "+en.d+(en.y!==st.y?", "+en.y:"");
-
-  } else if(histView==="month"){
-
-    navLabel=monthAbbrev(histMonth)+" "+histYear;
-
-  } else {
-
-    navLabel=String(histYear);
-
-  }
-
- 
-
-  var nav='<div class="hist-nav-row">'
-
-    +'<button class="nav-btn" onclick="navHistory(-1)">&#8249;</button>'
-
-    +'<div class="hist-period-label">'+navLabel+'</div>'
-
-    +'<button class="nav-btn" onclick="navHistory(1)">&#8250;</button>'
-
+  // (Intro / instructions placeholder — add your own text here later)
+
+  // Calorie & Feeding Calculator
+  html+='<div class="guide-card" id="calc-card">'
+    +'<div class="guide-title">&#129518; Daily Calorie &amp; Feeding Calculator</div>'
+    +'<div class="calc-formula">RER = 70 &times; (weight in kg)<sup>0.75</sup><br>MER = RER &times; activity factor</div>'
+    +'<div class="calc-row"><label class="calc-label">Weight (lb)</label>'
+    +'<input type="number" id="calcWeight" class="calc-input" value="60" min="1" step="0.5" oninput="runCalc()"></div>'
+    +'<div class="calc-row"><label class="calc-label">Life Stage / Activity</label>'
+    +'<select id="calcActivity" class="calc-select" onchange="runCalc()">'
+    +'<option value="1.0">Weight loss</option>'
+    +'<option value="1.2">Inactive / obese-prone</option>'
+    +'<option value="1.4">Senior / less active</option>'
+    +'<option value="1.6" selected>Spayed/Neutered adult &mdash; moderate activity</option>'
+    +'<option value="1.8">Intact adult &mdash; moderate activity</option>'
+    +'<option value="2.0">Active adult</option>'
+    +'<option value="3.0">Highly active / working dog</option>'
+    +'<option value="2.0">Puppy (4 months to adult)</option>'
+    +'<option value="3.0">Puppy (under 4 months)</option>'
+    +'</select></div>'
+    +'<div class="calc-result" id="calcResult"></div>'
+    +'<div class="calc-note">Estimates only &mdash; always confirm with your veterinarian before changing a feeding plan. Oz/day is approximated using Mya\'s current diet density (~42 kcal/oz of prepared food); actual density varies by recipe.</div>'
     +'</div>';
 
- 
+  // USDA Nutrient Lookup
+  html+='<div class="guide-card" id="usda-card">'
+    +'<div class="guide-title">&#128300; USDA Nutrient Lookup</div>'
+    +'<div class="usda-key-row">'
+    +'<input type="text" id="usdaKeyInput" class="usda-key-input" placeholder="Paste your free USDA FDC API key" value="'+escapeHtml(USDA_KEY)+'" oninput="saveUsdaKey(this.value)">'
+    +'<div class="usda-key-hint">Free key (instant, no approval wait): <a href="https://fdc.nal.usda.gov/api-key-signup.html" target="_blank">fdc.nal.usda.gov/api-key-signup</a>. Stored only in this browser &mdash; never uploaded to GitHub.</div>'
+    +'</div>'
+    +'<div class="usda-search-row">'
+    +'<input type="text" id="usdaQuery" class="usda-search-input" placeholder="Search a food, e.g. \'beef ground 85%\'" onkeydown="if(event.key===\'Enter\')searchUsda()">'
+    +'<button class="usda-search-btn" onclick="searchUsda()">Search</button>'
+    +'</div>'
+    +'<div class="usda-types-row" id="usdaTypesRow">'
+    +buildUsdaTypeChips()
+    +'</div>'
+    +'<div class="usda-status" id="usdaStatus"></div>'
+    +'<div id="usdaResults"></div>'
+    +'<div id="usdaDetail"></div>'
+    +'</div>';
 
-  var content="";
+  // Proteins
+  html+='<div class="guide-card"><div class="guide-title">&#127859; Protein Options</div>';
+  var proteins=[
+    {name:"Beef (85/15)",    fat:"Moderate",  freq:"Weekly",         tag:"mod"},
+    {name:"Ground Turkey",   fat:"Lean",      freq:"Weekly",         tag:"lean"},
+    {name:"Ground Chicken",  fat:"Lean",      freq:"Weekly",         tag:"lean"},
+    {name:"Pork Loin",       fat:"Lean",      freq:"Weekly",         tag:"lean"},
+    {name:"Sardines",        fat:"High &ndash; Omega-3s", freq:"2&ndash;3x/wk (fish days)", tag:"high"},
+    {name:"Salmon",          fat:"High &ndash; Omega-3s", freq:"2&ndash;3x/wk (fish days)", tag:"high"}
+  ];
+  for(var i=0;i<proteins.length;i++){
+    var p=proteins[i];
+    var tagLabel=p.fat;
+    html+='<div class="protein-row">'
+      +'<span class="protein-name">'+p.name+'</span>'
+      +'<span class="protein-tag tag-'+p.tag+'">'+tagLabel+'</span>'
+      +'</div>';
+  }
+  html+='<div style="font-size:10px;color:#555;margin-top:8px">All proteins rotate freely &bull; Rotate to ensure nutritional variety</div>';
+  html+='</div>';
 
-  if(histView==="week")  content=buildWeekView();
+  // Vegetables
+  html+='<div class="guide-card"><div class="guide-title">&#x1F966; Vegetable Guide</div>';
+  html+='<div class="guide-section">&#x1F7E2; Green Light &mdash; Rotate Freely (2&ndash;3 oz/meal)</div>';
+  var green=["Green beans","Zucchini","Bell peppers","Plain pumpkin puree","Carrots (steamed)","Romaine lettuce"];
+  for(var i=0;i<green.length;i++) html+='<div class="guide-item">&bull; '+green[i]+'</div>';
 
-  if(histView==="month") content=buildMonthView();
+  html+='<div class="guide-section">&#x26A0;&#xFE0F; Use Sparingly</div>';
+  html+='<div class="guide-item warn">&bull; Spinach &mdash; tiny amounts only (high oxalates)</div>';
+  html+='<div class="guide-item warn">&bull; Broccoli florets &mdash; under 10% of meal</div>';
 
-  if(histView==="year")  content=buildYearView();
+  html+='<div class="guide-section">&#x274C; Avoid as Vegetables</div>';
+  var avoid=["Sweet potato (use as starch instead)","Lentils &amp; chickpeas","Cabbage","Brussels sprouts"];
+  for(var i=0;i<avoid.length;i++) html+='<div class="guide-item avoid">&bull; '+avoid[i]+'</div>';
+  html+='</div>';
 
- 
+  // Starches
+  html+='<div class="guide-card"><div class="guide-title">&#x1F35E; Starch Options (2&ndash;3 oz/meal)</div>';
+  var starches=[
+    {name:"Quinoa",              prep:"Rinse, cook 15 min",     note:"Complete protein"},
+    {name:"Oats (rolled/steel-cut)",prep:"Cook 10&ndash;15 min",note:"Beta-glucans"},
+    {name:"Sweet potato",        prep:"Bake or steam, mash",    note:"Beta-carotene"},
+    {name:"White rice",          prep:"Cook plain",             note:"Occasional only"}
+  ];
+  for(var i=0;i<starches.length;i++){
+    var st=starches[i];
+    html+='<div style="padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05)">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center">'
+      +'<span style="font-size:12px;font-weight:600">'+st.name+'</span>'
+      +'<span style="font-size:10px;color:#888">'+st.note+'</span></div>'
+      +'<div style="font-size:10px;color:#666;margin-top:2px">'+st.prep+'</div>'
+      +'</div>';
+  }
+  html+='</div>';
 
-  document.getElementById("page-history").innerHTML = toggle+nav+content;
+  // Organ Meats
+  html+='<div class="guide-card"><div class="guide-title">&#10084;&#xFE0F; Organ Meats (0.5 oz)</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr auto;gap:4px;font-size:10px;font-weight:700;color:#555;margin-bottom:6px;">'
+    +'<div>Organ</div><div>Frequency</div></div>';
+  var organs=[
+    {name:"Liver (any species)", freq:"2&ndash;3x/week", note:"Max 3.5 oz total/week"},
+    {name:"Heart (any species)", freq:"1&ndash;2x/week", note:"Muscle meat, no strict limit"},
+    {name:"Kidney (optional)",   freq:"1x/week",         note:"High B12 &amp; selenium"}
+  ];
+  for(var i=0;i<organs.length;i++){
+    var og=organs[i];
+    html+='<div style="display:grid;grid-template-columns:1fr auto;gap:4px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">'
+      +'<div><div style="font-size:12px">'+og.name+'</div>'
+      +'<div style="font-size:10px;color:#555;margin-top:1px">'+og.note+'</div></div>'
+      +'<div style="font-size:11px;color:#c8933a;text-align:right;padding-top:2px">'+og.freq+'</div>'
+      +'</div>';
+  }
+  html+='</div>';
 
+  // Daily Constants
+  html+='<div class="guide-card"><div class="guide-title">&#9881;&#xFE0F; Daily Constants &mdash; Every Meal</div>';
+  var consts=[
+    "&#189; tsp eggshell powder &rarr; calcium ~800mg",
+    "1 small pinch iodized salt &rarr; iodine + sodium",
+    "&#188; tsp psyllium husk powder &rarr; fiber",
+    "&#188; tsp mixed tocopherols (non-fish) OR 200 IU Vit E oil (fish meals)",
+    "&#188; tsp parsley or herb cube",
+    "&#8539; tsp ginger or herb cube (all meals except fish)",
+    "1 pinch spearmint or herb cube (fish meals)",
+    "1&#189; tbsp reserved cooking liquid or bone broth"
+  ];
+  for(var i=0;i<consts.length;i++) html+='<div class="guide-item">&bull; '+consts[i]+'</div>';
+  html+='</div>';
+
+  document.getElementById("page-guide").innerHTML=html;
+  runCalc();
 }
 
- 
+function runCalc(){
+  var lbEl=document.getElementById("calcWeight");
+  var actEl=document.getElementById("calcActivity");
+  if(!lbEl||!actEl) return;
+  var lb=parseFloat(lbEl.value)||0;
+  var factor=parseFloat(actEl.value)||1.6;
+  var kg=lb/2.2046;
+  var rer=70*Math.pow(kg,0.75);
+  var mer=rer*factor;
+  var kcalPerOz=42.2; // derived from Mya's plan: ~1,350 kcal / 32 oz daily food
+  var ozPerDay=mer/kcalPerOz;
+  var ozPerMeal=ozPerDay/2;
 
-function buildWeekView(){
+  document.getElementById("calcResult").innerHTML=
+    '<div class="calc-out"><span>RER (resting energy)</span><span>'+Math.round(rer)+' kcal/day</span></div>'
+    +'<div class="calc-out highlight"><span>MER (daily calories)</span><span>'+Math.round(mer)+' kcal/day</span></div>'
+    +'<div class="calc-out"><span>Est. total food</span><span>'+ozPerDay.toFixed(1)+' oz/day</span></div>'
+    +'<div class="calc-out"><span>Per meal (2&times;/day)</span><span>'+ozPerMeal.toFixed(1)+' oz</span></div>';
+}
 
-  var st=startOfWeek(histYear,histMonth,histDay);
+// ── USDA FOODDATA CENTRAL LOOKUP ─────────────────────────────────────────────
+function saveUsdaKey(v){
+  USDA_KEY=v;
+  try{localStorage.setItem("mya_usda_key",v);}catch(e){}
+}
 
+function buildUsdaTypeChips(targetId){
+  targetId=targetId||"usdaTypesRow";
   var html="";
+  for(var i=0;i<USDA_DATA_TYPES.length;i++){
+    var t=USDA_DATA_TYPES[i];
+    var on=usdaSelectedTypes[t];
+    html+='<button class="usda-type-chip'+(on?" on":"")+'" onclick="toggleUsdaType(\''+t+'\',\''+targetId+'\')" type="button">'+t+'</button>';
+  }
+  return html;
+}
 
-  for(var i=0;i<7;i++){
+function toggleUsdaType(t,targetId){
+  usdaSelectedTypes[t]=!usdaSelectedTypes[t];
+  document.getElementById(targetId||"usdaTypesRow").innerHTML=buildUsdaTypeChips(targetId);
+}
 
-    var dt=addDays(st.y,st.m,st.d,i);
+function usdaStatus(msg,isErr){
+  var el=document.getElementById("usdaStatus");
+  el.className="usda-status"+(isErr?" err":"");
+  el.innerHTML=msg;
+}
 
-    var ds=dateKey(dt.y,dt.m,dt.d);
+function fetchUsdaSearch(q, types, onResults, onError){
+  var url="https://api.nal.usda.gov/fdc/v1/foods/search?api_key="+encodeURIComponent(USDA_KEY);
+  fetch(url,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({query:q,dataType:types,pageSize:15})
+  })
+  .then(function(res){
+    if(res.status===401||res.status===403){ throw new Error("Invalid API key. Double-check the key you pasted."); }
+    if(res.status===429){ throw new Error("Rate limit reached. Wait a bit and try again."); }
+    if(!res.ok){ throw new Error("USDA server error ("+res.status+")."); }
+    return res.json();
+  })
+  .then(function(data){ onResults(data.foods||[]); })
+  .catch(function(err){ onError(err.message||"Search failed. Check your connection and API key."); });
+}
 
-    var dow=getDOW(dt.y,dt.m,dt.d);
+function fetchUsdaDetail(fdcId, onDetail, onError){
+  var url="https://api.nal.usda.gov/fdc/v1/food/"+fdcId+"?api_key="+encodeURIComponent(USDA_KEY);
+  fetch(url)
+    .then(function(res){
+      if(!res.ok){ throw new Error("Couldn't load food details ("+res.status+")."); }
+      return res.json();
+    })
+    .then(onDetail)
+    .catch(function(err){ onError(err.message||"Couldn't load food details."); });
+}
 
-    var dn=DAYS_OF_WEEK[dow];
+function searchUsda(){
+  var q=document.getElementById("usdaQuery").value.trim();
+  if(!USDA_KEY){ usdaStatus("Paste your free USDA API key above first.",true); return; }
+  if(!q){ usdaStatus("Type a food name to search.",true); return; }
 
-    var wk=getWK(dt.y,dt.m,dt.d);
+  var types=[];
+  for(var i=0;i<USDA_DATA_TYPES.length;i++){ if(usdaSelectedTypes[USDA_DATA_TYPES[i]]) types.push(USDA_DATA_TYPES[i]); }
+  if(types.length===0){ usdaStatus("Select at least one data type.",true); return; }
 
-    var dm=(WEEKS[wk]||{})[dn]||{};
+  document.getElementById("usdaResults").innerHTML="";
+  document.getElementById("usdaDetail").innerHTML="";
+  usdaStatus("Searching USDA FoodData Central&hellip;",false);
 
-    var amFed=!!fedLog[ds+"_am"];
+  fetchUsdaSearch(q, types, function(foods){
+    if(foods.length===0){ usdaStatus("No matches found. Try a simpler search term.",false); return; }
+    usdaStatus(foods.length+" results", false);
+    renderUsdaResults(foods);
+  }, function(msg){ usdaStatus(msg,true); });
+}
 
-    var pmFed=!!fedLog[ds+"_pm"];
-
-    var note=notesLog[ds]||"";
-
-    var isToday=(dt.y===today.getFullYear()&&dt.m===today.getMonth()&&dt.d===today.getDate());
-
-    var notePreview = note ? ("&#128221; "+escapeHtml(note.length>70?note.slice(0,70)+"…":note)) : "+ Add note";
-
- 
-
-    html+='<div class="week-day-row'+(isToday?" today":"")+'">'
-
-      +'<div class="week-day-name">'+dn+' &middot; '+monthAbbrev(dt.m)+' '+dt.d+'</div>'
-
-      +'<div class="week-meals">'
-
-      +'<div class="week-meal-pill'+(amFed?" fed":"")+'">'+(amFed?"&#10003; ":"")+'AM: '+(dm.am?dm.am.protein:"&mdash;")+'</div>'
-
-      +'<div class="week-meal-pill'+(pmFed?" fed":"")+'">'+(pmFed?"&#10003; ":"")+'PM: '+(dm.pm?dm.pm.protein:"&mdash;")+'</div>'
-
-      +'</div>'
-
-      +'<div class="week-note" onclick="openDayDetail(\''+ds+'\')">'+notePreview+'</div>'
-
+function renderUsdaResults(foods){
+  var html="";
+  for(var i=0;i<foods.length;i++){
+    var f=foods[i];
+    var name=escapeHtml(f.description||"Unknown");
+    var brand=f.brandOwner?(" &mdash; "+escapeHtml(f.brandOwner)):"";
+    html+='<div class="usda-result-item" onclick="viewUsdaFood('+f.fdcId+')">'
+      +'<div class="usda-result-name">'+name+'<span class="usda-result-badge">'+escapeHtml(f.dataType||"")+'</span></div>'
+      +'<div class="usda-result-meta">FDC #'+f.fdcId+brand+'</div>'
       +'</div>';
+  }
+  document.getElementById("usdaResults").innerHTML=html;
+}
 
+function getNutrientFields(entry){
+  if(entry.nutrient){
+    return { name: entry.nutrient.name||"", unit: entry.nutrient.unitName||"", value: (entry.amount!=null?entry.amount:entry.value) };
+  }
+  return { name: entry.nutrientName||"", unit: entry.unitName||"", value: entry.value };
+}
+
+function extractPer100g(foodDetail){
+  var entries=foodDetail.foodNutrients||[];
+  var raw=zeroN();
+  var found={};
+
+  var directMap=[
+    {key:"protein",    match:["Protein"]},
+    {key:"fat",        match:["Total lipid (fat)"]},
+    {key:"calcium",    match:["Calcium, Ca"]},
+    {key:"phosphorus", match:["Phosphorus, P"]},
+    {key:"potassium",  match:["Potassium, K"]},
+    {key:"sodium",     match:["Sodium, Na"]},
+    {key:"chloride",   match:["Chloride, Cl","Chloride"]},
+    {key:"magnesium",  match:["Magnesium, Mg"]},
+    {key:"iron",       match:["Iron, Fe"]},
+    {key:"copper",     match:["Copper, Cu"]},
+    {key:"zinc",       match:["Zinc, Zn"]},
+    {key:"selenium",   match:["Selenium, Se"]},
+    {key:"vitK",       match:["Vitamin K (phylloquinone)"]},
+    {key:"vitB1",      match:["Thiamin"]},
+    {key:"vitB2",      match:["Riboflavin"]},
+    {key:"vitB3",      match:["Niacin"]},
+    {key:"vitB5",      match:["Pantothenic acid"]},
+    {key:"vitB6",      match:["Vitamin B-6"]},
+    {key:"vitB12",     match:["Vitamin B-12"]},
+    {key:"folate",     match:["Folate, total"]},
+    {key:"choline",    match:["Choline, total"]}
+  ];
+
+  for(var i=0;i<entries.length;i++){
+    var f=getNutrientFields(entries[i]);
+    if(!f.name || f.value==null) continue;
+
+    for(var d=0;d<directMap.length;d++){
+      if(found[directMap[d].key]) continue;
+      for(var mi=0;mi<directMap[d].match.length;mi++){
+        if(f.name===directMap[d].match[mi]){ raw[directMap[d].key]=f.value; found[directMap[d].key]=true; break; }
+      }
+    }
+
+    if(!found.iodine && f.name==="Iodine, I"){ raw.iodine=f.value/1000; found.iodine=true; } // mcg -> mg
+
+    if(!found.vitA && f.name==="Vitamin A, IU"){ raw.vitA=f.value; found.vitA=true; }
+    if(!found.vitA && f.name==="Vitamin A, RAE"){ raw.vitA=f.value*3.33; }
+
+    if(!found.vitD && f.name.indexOf("Vitamin D")===0){
+      if(f.unit==="IU"){ raw.vitD=f.value; found.vitD=true; }
+      else { raw.vitD=f.value*40; found.vitD=true; } // mcg -> IU
+    }
+
+    if(!found.vitE && f.name==="Vitamin E (alpha-tocopherol)"){ raw.vitE=f.value*1.49; found.vitE=true; } // mg -> IU approx
+
+    if(/18:3|20:5|22:6/.test(f.name) && /n-3/i.test(f.name)){
+      var mg3=(f.unit==="G")?f.value*1000:f.value;
+      raw.omega3=(raw.omega3||0)+mg3;
+    }
+    if(/18:2|20:4/.test(f.name) && /n-6/i.test(f.name)){
+      var mg6=(f.unit==="G")?f.value*1000:f.value;
+      raw.omega6=(raw.omega6||0)+mg6;
+    }
+  }
+  return raw;
+}
+
+var _usdaCurrent=null;
+
+function per100gToPerOz(per100){
+  var ozFactor=28.3495/100;
+  var perOz={};
+  for(var k=0;k<KEYS.length;k++) perOz[KEYS[k]]=+(((per100[KEYS[k]]||0))*ozFactor).toFixed(4);
+  return perOz;
+}
+
+function viewUsdaFood(fdcId){
+  document.getElementById("usdaDetail").innerHTML='<div class="usda-status">Loading nutrient details&hellip;</div>';
+  fetchUsdaDetail(fdcId, function(detail){
+    var perOz=per100gToPerOz(extractPer100g(detail));
+    _usdaCurrent={name:detail.description, perOz:perOz};
+
+    var rows="";
+    for(var a=0;a<AAFCO.length;a++){
+      var cfg=AAFCO[a];
+      var v=perOz[cfg.k];
+      rows+='<div class="usda-nutrient-row"><span>'+cfg.label+'</span><span>'+v+' '+cfg.unit+'/oz</span></div>';
+    }
+
+    var snippet=buildMkNSnippet(detail.description, perOz);
+
+    document.getElementById("usdaDetail").innerHTML=
+      '<div class="usda-detail">'
+      +'<div class="usda-detail-title">'+escapeHtml(detail.description)+'</div>'
+      +'<div class="usda-result-meta" style="margin-bottom:8px">FDC #'+detail.fdcId+' &middot; '+escapeHtml(detail.dataType||"")+' &middot; values per oz, converted from USDA per-100g data</div>'
+      +'<div class="usda-nutrient-table">'+rows+'</div>'
+      +'<div class="guide-section">Ready-to-paste ingredient code</div>'
+      +'<textarea class="usda-snippet" id="usdaSnippetBox" readonly>'+escapeHtml(snippet)+'</textarea>'
+      +'<button class="addins-btn" onclick="copyUsdaSnippet()">Copy Code</button>'
+      +'<div class="usda-approx-note">Protein, fat, minerals, and B-vitamins map directly from USDA values. Omega-3/6, Vitamin A, D, and E involve unit conversions (IU, RAE, alpha-tocopherol) and are best-effort approximations &mdash; sanity-check against a known reference before relying on them for a new ingredient.</div>'
+      +'</div>';
+  }, function(msg){
+    document.getElementById("usdaDetail").innerHTML='<div class="usda-status err">'+msg+'</div>';
+  });
+}
+
+function buildMkNSnippet(name, perOz){
+  var vals=[];
+  for(var i=0;i<KEYS.length;i++) vals.push(perOz[KEYS[i]]);
+  return '"'+name+'": mkN('+vals.join(",")+'),';
+}
+
+function copyUsdaSnippet(){
+  var box=document.getElementById("usdaSnippetBox");
+  if(!box) return;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(box.value).then(function(){
+      usdaStatus("Copied to clipboard!",false);
+    }).catch(function(){
+      box.select();
+    });
+  } else {
+    box.select();
+    try{ document.execCommand("copy"); usdaStatus("Copied to clipboard!",false); }catch(e){}
+  }
+}
+
+// ── HISTORY (embedded under Calendar tab) ───────────────────────────────────
+function setHistView(v){ histView=v; renderCalendarPage(); }
+
+function setHistMode(checked){ histMode = checked ? "actual" : "scheduled"; renderCalendarPage(); }
+
+function navHistory(dir){
+  if(histView==="week"){
+    var nd=addDays(histYear,histMonth,histDay,dir*7);
+    histYear=nd.y; histMonth=nd.m; histDay=nd.d;
+  } else if(histView==="month"){
+    var dt=new Date(histYear,histMonth+dir,1);
+    histYear=dt.getFullYear(); histMonth=dt.getMonth();
+  } else {
+    histYear+=dir;
+  }
+  renderCalendarPage();
+}
+
+function jumpToMonth(y,m){ histYear=y; histMonth=m; histView="month"; renderCalendarPage(); }
+
+function buildHistoryHtml(){
+  var views=["week","month","year"];
+  var toggle='<div class="view-toggle">';
+  for(var i=0;i<views.length;i++){
+    var v=views[i];
+    var lbl=v==="week"?"Week":v==="month"?"Month":"Year";
+    toggle+='<button class="view-btn'+(histView===v?" active":"")+'" onclick="setHistView(\''+v+'\')">'+lbl+'</button>';
+  }
+  toggle+='</div>';
+
+  var checkbox='<label class="actual-toggle"><input type="checkbox" id="actualChk" onchange="setHistMode(this.checked)"'
+    +(histMode==="actual"?" checked":"")+'> Show actual fed meals (hide scheduled)</label>';
+
+  var navLabel="";
+  if(histView==="week"){
+    var st=startOfWeek(histYear,histMonth,histDay);
+    var en=addDays(st.y,st.m,st.d,6);
+    navLabel=monthAbbrev(st.m)+" "+st.d+" &ndash; "+monthAbbrev(en.m)+" "+en.d+(en.y!==st.y?", "+en.y:"");
+  } else if(histView==="month"){
+    navLabel=monthAbbrev(histMonth)+" "+histYear;
+  } else {
+    navLabel=String(histYear);
   }
 
-  return html;
+  var nav='<div class="hist-nav-row">'
+    +'<button class="nav-btn" onclick="navHistory(-1)">&#8249;</button>'
+    +'<div class="hist-period-label">'+navLabel+'</div>'
+    +'<button class="nav-btn" onclick="navHistory(1)">&#8250;</button>'
+    +'</div>';
 
+  var content="";
+  if(histView==="week")  content=buildWeekView();
+  if(histView==="month") content=buildMonthView();
+  if(histView==="year")  content=buildYearView();
+
+  return toggle+checkbox+nav+content;
 }
 
- 
+function buildWeekView(){
+  var st=startOfWeek(histYear,histMonth,histDay);
+  var html="";
+  for(var i=0;i<7;i++){
+    var dt=addDays(st.y,st.m,st.d,i);
+    var ds=dateKey(dt.y,dt.m,dt.d);
+    var dow=getDOW(dt.y,dt.m,dt.d);
+    var dn=DAYS_OF_WEEK[dow];
+    var wk=getWK(dt.y,dt.m,dt.d);
+    var dm=(WEEKS[wk]||{})[dn]||{};
+    var amFed=!!fedLog[ds+"_am"];
+    var pmFed=!!fedLog[ds+"_pm"];
+    var note=notesLog[ds]||"";
+    var isToday=(dt.y===today.getFullYear()&&dt.m===today.getMonth()&&dt.d===today.getDate());
+    var notePreview = note ? ("&#128221; "+escapeHtml(note.length>70?note.slice(0,70)+"…":note)) : "+ Add note";
+
+    var amText, pmText;
+    if(histMode==="actual"){
+      amText = amFed ? ("&#10003; AM: "+(dm.am?dm.am.protein:"&mdash;")) : "AM: Not fed";
+      pmText = pmFed ? ("&#10003; PM: "+(dm.pm?dm.pm.protein:"&mdash;")) : "PM: Not fed";
+    } else {
+      amText = (amFed?"&#10003; ":"")+"AM: "+(dm.am?dm.am.protein:"&mdash;");
+      pmText = (pmFed?"&#10003; ":"")+"PM: "+(dm.pm?dm.pm.protein:"&mdash;");
+    }
+
+    html+='<div class="week-day-row'+(isToday?" today":"")+'">'
+      +'<div class="week-day-name">'+dn+' &middot; '+monthAbbrev(dt.m)+' '+dt.d+'</div>'
+      +'<div class="week-meals">'
+      +'<div class="week-meal-pill'+(amFed?" fed":"")+'">'+amText+'</div>'
+      +'<div class="week-meal-pill'+(pmFed?" fed":"")+'">'+pmText+'</div>'
+      +'</div>'
+      +'<div class="week-note" onclick="openDayDetail(\''+ds+'\')">'+notePreview+'</div>'
+      +'</div>';
+  }
+  return html;
+}
 
 function buildMonthView(){
-
   var y=histYear, m=histMonth;
-
   var firstDow=getDOW(y,m,1);
-
   var daysInMonth=new Date(y,m+1,0).getDate();
 
- 
-
   var html='<div class="month-weekdays">';
-
   var wd=["S","M","T","W","T","F","S"];
-
   for(var i=0;i<7;i++) html+='<div class="month-weekday-cell">'+wd[i]+'</div>';
-
   html+='</div><div class="month-grid">';
-
- 
 
   for(var i=0;i<firstDow;i++) html+='<div class="month-cell empty"></div>';
 
- 
-
   for(var d=1; d<=daysInMonth; d++){
-
     var ds=dateKey(y,m,d);
-
     var amFed=!!fedLog[ds+"_am"];
-
     var pmFed=!!fedLog[ds+"_pm"];
-
     var hasNote=!!notesLog[ds];
-
     var isToday=(y===today.getFullYear()&&m===today.getMonth()&&d===today.getDate());
-
     var fc=(amFed?1:0)+(pmFed?1:0);
-
     var cls="month-cell"+(isToday?" today":"")+(fc===2?" full-fed":fc===1?" half-fed":"");
-
     html+='<div class="'+cls+'" onclick="openDayDetail(\''+ds+'\')">'
-
       +'<div class="month-cell-day">'+d+'</div>'
-
       +'<div class="month-cell-dots"><span class="m-dot'+(amFed?" on":"")+'"></span><span class="m-dot'+(pmFed?" on":"")+'"></span></div>'
-
       +(hasNote?'<div class="note-dot"></div>':'')
-
       +'</div>';
-
   }
-
   html+='</div>';
-
   return html;
-
 }
-
- 
 
 function buildYearView(){
-
   var y=histYear;
-
   var html='<div class="year-grid">';
-
   for(var m=0;m<12;m++){
-
     var daysInMonth=new Date(y,m+1,0).getDate();
-
     var firstDow=getDOW(y,m,1);
-
     html+='<div class="mini-month" onclick="jumpToMonth('+y+','+m+')">'
-
       +'<div class="mini-month-label">'+monthAbbrev(m)+'</div>'
-
       +'<div class="mini-grid">';
-
     for(var i=0;i<firstDow;i++) html+='<span class="mini-cell empty"></span>';
-
     for(var d=1; d<=daysInMonth; d++){
-
       var ds=dateKey(y,m,d);
-
       var amFed=!!fedLog[ds+"_am"];
-
       var pmFed=!!fedLog[ds+"_pm"];
-
       var fc=(amFed?1:0)+(pmFed?1:0);
-
       var cls="mini-cell"+(fc===2?" full":fc===1?" half":"");
-
       html+='<span class="'+cls+'"></span>';
-
     }
-
     html+='</div></div>';
-
   }
-
   html+='</div>';
-
   return html;
-
 }
 
- 
-
 function openDayDetail(ds){
-
   var parts=ds.split("-");
-
   var y=parseInt(parts[0],10), m=parseInt(parts[1],10), d=parseInt(parts[2],10);
-
   var dow=getDOW(y,m,d), wk=getWK(y,m,d), dn=DAYS_OF_WEEK[dow];
-
   var dm=(WEEKS[wk]||{})[dn]||{};
-
   var amFed=!!fedLog[ds+"_am"], pmFed=!!fedLog[ds+"_pm"];
-
   var note=notesLog[ds]||"";
-
   var label=fmtDate(y,m,d);
 
- 
-
   var html='<div class="overlay" id="ddbg"><div class="modal">'
-
     +'<div class="modal-head"><div class="modal-title">'+label+'</div>'
-
     +'<button class="modal-close" onclick="closeDayDetail()">&#10005;</button></div>';
 
- 
+  // AM block — in "actual" mode, hide scheduled details unless it was actually fed
+  var amDetail;
+  if(!dm.am){
+    amDetail='<div class="dd-detail">No meal scheduled</div>';
+  } else if(histMode==="actual" && !amFed){
+    amDetail='<div class="dd-detail">Not fed</div>';
+  } else {
+    amDetail='<div class="dd-protein">'+dm.am.protein+'</div><div class="dd-detail">'+dm.am.starch+' &middot; '+dm.am.veg+(dm.am.organ?' &middot; '+dm.am.organ:'')+'</div>';
+  }
+  html+='<div class="day-detail-meal"><div class="dd-label">AM'+(amFed?" &#10003; Fed":" &mdash; not fed")+'</div>'+amDetail+'</div>';
 
-  html+='<div class="day-detail-meal"><div class="dd-label">AM'+(amFed?" &#10003; Fed":" &mdash; not fed")+'</div>'
-
-    +(dm.am?('<div class="dd-protein">'+dm.am.protein+'</div><div class="dd-detail">'+dm.am.starch+' &middot; '+dm.am.veg+(dm.am.organ?' &middot; '+dm.am.organ:'')+'</div>'):'<div class="dd-detail">No meal scheduled</div>')
-
-    +'</div>';
-
- 
-
-  html+='<div class="day-detail-meal"><div class="dd-label">PM'+(pmFed?" &#10003; Fed":" &mdash; not fed")+'</div>'
-
-    +(dm.pm?('<div class="dd-protein">'+dm.pm.protein+'</div><div class="dd-detail">'+dm.pm.starch+' &middot; '+dm.pm.veg+(dm.pm.organ?' &middot; '+dm.pm.organ:'')+'</div>'):'<div class="dd-detail">No meal scheduled</div>')
-
-    +'</div>';
-
- 
+  // PM block — same logic
+  var pmDetail;
+  if(!dm.pm){
+    pmDetail='<div class="dd-detail">No meal scheduled</div>';
+  } else if(histMode==="actual" && !pmFed){
+    pmDetail='<div class="dd-detail">Not fed</div>';
+  } else {
+    pmDetail='<div class="dd-protein">'+dm.pm.protein+'</div><div class="dd-detail">'+dm.pm.starch+' &middot; '+dm.pm.veg+(dm.pm.organ?' &middot; '+dm.pm.organ:'')+'</div>';
+  }
+  html+='<div class="day-detail-meal"><div class="dd-label">PM'+(pmFed?" &#10003; Fed":" &mdash; not fed")+'</div>'+pmDetail+'</div>';
 
   html+='<div class="modal-hint" style="margin-top:10px">Notes</div>'
-
     +'<textarea id="noteInput" class="note-textarea" placeholder="Add a note for this day...">'+escapeHtml(note)+'</textarea>'
-
     +'<button class="save-btn" onclick="saveDayNote(\''+ds+'\')">Save Note</button>';
-
- 
 
   html+='</div></div>';
 
- 
-
   document.getElementById("modal-root").innerHTML=html;
-
   document.getElementById("ddbg").addEventListener("click",function(e){ if(e.target===this) closeDayDetail(); });
-
 }
-
- 
 
 function closeDayDetail(){ document.getElementById("modal-root").innerHTML=""; }
 
- 
-
 function saveDayNote(ds){
-
   var el=document.getElementById("noteInput");
-
   var v=el?el.value.trim():"";
-
   if(v) notesLog[ds]=v; else delete notesLog[ds];
-
   try{localStorage.setItem("mya_notes",JSON.stringify(notesLog));}catch(e){}
-
   closeDayDetail();
-
-  renderHistory();
-
+  renderCalendarPage();
 }
 
- 
-
 // ── BOOT ──────────────────────────────────────────────────────────────────────
-
-renderPlan();
-
+renderGuide();
 </script>
-
 </body>
-
 </html>
-
- 
-
